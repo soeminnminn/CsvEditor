@@ -1,0 +1,17 @@
+﻿<Application x:Class="CsvEditor.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:CsvEditor"
+             StartupUri="Views\MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/CsvEditor;component/Resources/Icons.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/CsvEditor;component/Resources/ComingSoon.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/CsvEditor;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/CsvEditor;component/Themes/GoToBar.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/CsvEditor;component/Themes/FindAndReplaceBar.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

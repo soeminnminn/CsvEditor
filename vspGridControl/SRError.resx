@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<!-- 
+		Microsoft ResX Schema
+
+		Version 1.3
+
+		The primary goals of this format is to allow a simple XML format 
+		that is mostly human readable. The generation and parsing of the 
+		various data types are done through the TypeConverter classes 
+		associated with the data types.
+
+		Example:
+
+		... ado.net/XML headers & schema ...
+		<resheader name="resmimetype">text/microsoft-resx</resheader>
+		<resheader name="version">1.3</resheader>
+		<resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+		<resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+		<data name="Name1">this is my long string</data>
+		<data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+		<data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+			[base64 mime encoded serialized .NET Framework object]
+		</data>
+		<data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+			[base64 mime encoded string representing a byte array form of the .NET Framework object]
+		</data>
+
+		There are any number of "resheader" rows that contain simple 
+		name/value pairs.
+
+		Each data row contains a name, and value. The row also contains a 
+		type or mimetype. Type corresponds to a .NET class that support 
+		text/value conversion through the TypeConverter architecture. 
+		Classes that don't support this are serialized and stored with the 
+		mimetype set.
+
+		The mimetype is used for serialized objects, and tells the 
+		ResXResourceReader how to depersist the object. This is currently not 
+		extensible. For a given mimetype the value must be set accordingly:
+
+		Note - application/x-microsoft.net.object.binary.base64 is the format 
+		that the ResXResourceWriter will generate, however the reader can 
+		read any of the formats listed below.
+
+		mimetype: application/x-microsoft.net.object.binary.base64
+		value   : The object must be serialized with 
+			: System.Serialization.Formatters.Binary.BinaryFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.soap.base64
+		value   : The object must be serialized with 
+			: System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.bytearray.base64
+		value   : The object must be serialized into a byte array 
+			: using a System.ComponentModel.TypeConverter
+			: and then encoded with base64 encoding.
+	-->
+	
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>1.3</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+  <data name="FirstScrollableColumnShouldBeValid" xml:space="preserve">
+    <value>First scrollable column index should be greater than or equal to zero and less than the number of columns.</value>
+  </data>
+  <data name="FirstScrollableRowShouldBeValid" xml:space="preserve">
+    <value>First scrollable row index should be greater than or equal to zero and less than the number of rows.</value>
+  </data>
+  <data name="InvalidColIndexForMergedResizeProp" xml:space="preserve">
+    <value>MergedHeaderResizeProportion property can be set only for columns that have merged header</value>
+  </data>
+  <data name="AutoScrollMoreThanZero" xml:space="preserve">
+    <value>Auto scroll interval should be greater than zero.</value>
+  </data>
+  <data name="ColumnIsNotCheckBox" xml:space="preserve">
+    <value>Column # {0} is not of checkbox type.</value>
+  </data>
+  <data name="CannotPrintEmptyGrid" xml:space="preserve">
+    <value>Cannot print empty grid.</value>
+  </data>
+  <data name="InvalidCurrentSelBlockForClicpboard" xml:space="preserve">
+    <value>Cannot create clipboard data object for currently selected block of cells because nothing is selected</value>
+  </data>
+  <data name="InvalidThreadForMethod" xml:space="preserve">
+    <value>This method should be called from the UI thread where the grid was created.</value>
+  </data>
+  <data name="NoIGridEmbeddedControl" xml:space="preserve">
+    <value>embeddedControl must implement IGridEmbeddedControl.</value>
+  </data>
+  <data name="OnlySolidBrush" xml:space="preserve">
+    <value>Only SolidBrush can be specified as parameter</value>
+  </data>
+  <data name="ShouldSetHeaderStateForRegualrCol" xml:space="preserve">
+    <value>column # {0} does not have check box on its header. Use overloaded HeaderInfo method for such columns.</value>
+  </data>
+  <data name="FirstScrollableWillBeBad" xml:space="preserve">
+    <value>The first scrollable index will not be valid after deletion.</value>
+  </data>
+  <data name="ShouldBeNoDataForMergedColumHeader" xml:space="preserve">
+    <value>Text and bitmap for the header item that is merged with the one to its right cannot be specified.</value>
+  </data>
+  <data name="InvalidGridStateForClipboard" xml:space="preserve">
+    <value>Clipboard operation cannot be performed in current grid state.</value>
+  </data>
+  <data name="ScrollPosShouldBeMoreOrEqualZero" xml:space="preserve">
+    <value>Parameter should be greater than or equal to zero.</value>
+  </data>
+  <data name="InvalidCustomColType" xml:space="preserve">
+    <value>Custom ColumnType should be greater than or equal to GridColumnType.FirstCustomColumnType.</value>
+  </data>
+  <data name="InvalidCellType" xml:space="preserve">
+    <value>EditableCellType should be greater than or equal to EditableCellType.FirstCustomEditableCellType.</value>
+  </data>
+  <data name="ShouldSetHeaderStateForCheckBox" xml:space="preserve">
+    <value>column # {0} has check box on its header. Use overloaded HeaderInfo method for such columns.</value>
+  </data>
+  <data name="NoMultiBlockSelInSingleSelMode" xml:space="preserve">
+    <value>Cannot set multiple selection blocks while in single selection mode.</value>
+  </data>
+  <data name="InvalidSelStringInEmbeddedCombo" xml:space="preserve">
+    <value>EmbeddedComboBox.SetCurSelectionAsString: item that must be selected does not exist.</value>
+  </data>
+  <data name="HorizScrollUnitShouldBeGreaterThanZero" xml:space="preserve">
+    <value>Horizontal scroll unit should be greater than zero.</value>
+  </data>
+  <data name="CannotSetMergeItemState" xml:space="preserve">
+    <value>state of the header item that is merged with the one to its right cannot be specified.</value>
+  </data>
+  <data name="InvalidMergedHeaderResizeProportion" xml:space="preserve">
+    <value>MergedHeaderResizeProportion property should be between 0f and 1f.</value>
+  </data>
+  <data name="NonExistingGridSelectionBlock" xml:space="preserve">
+    <value>Cannot select non-existing cell ({0}, {1}, {2}, {3}).</value>
+  </data>
+  <data name="LastNonScrollCannotBeMerged" xml:space="preserve">
+    <value>Last non-scrollable column cannot have merged header.</value>
+  </data>
+  <data name="NoIGridEmbeddedControlManagement" xml:space="preserve">
+    <value>embeddedControl MUST implement IGridEmbeddedControlManagement</value>
+  </data>
+  <data name="ColumnWidthShouldBeGreaterThanZero" xml:space="preserve">
+    <value>Column width should be greater than zero.</value>
+  </data>
+  <data name="ColumnWidthShouldBeLessThanMax" xml:space="preserve">
+    <value>Column width in pixels should be less than or equal to {0}.</value>
+  </data>
+  <data name="CellHeightShouldBeGreaterThanZero" xml:space="preserve">
+    <value>Cell height must be greater than zero.</value>
+  </data>
+  <data name="DeriveToImplementCustomColumn" xml:space="preserve">
+    <value>Use class derived from the grid control to implement custom columns.</value>
+  </data>
+  <data name="NumOfRowsShouldBeGreaterThanZero" xml:space="preserve">
+    <value>Number of rows should be greater than or equal to zero.</value>
+  </data>
+  <data name="InvalidSelIndexInEmbeddedCombo" xml:space="preserve">
+    <value>EmbeddedComboBox.SetCurSelectionIndex: invalid index.</value>
+  </data>
+  <data name="GridColumnNumberShouldBeAboveZero" xml:space="preserve">
+    <value>Grid column number should be greater than zero.</value>
+  </data>
+  <data name="RowIndexShouldBeInRange" xml:space="preserve">
+    <value>Row index must be greater than or equal to zero and less than the number of rows.</value>
+  </data>
+  <data name="CurControlIsNotIGridEmbedded" xml:space="preserve">
+    <value>Unrecoverable error; current control is not IGridEmbeddedControl.</value>
+  </data>
+  <data name="GridColumnInfoCollectionIsReadOnly" xml:space="preserve">
+    <value>GridColumnInfoCollection is read-only, and its items cannot be modified.</value>
+  </data>
+  <data name="ColumnIndexShouldBeInRange" xml:space="preserve">
+    <value>Column index must be greater than or equal to zero and less than the number of columns.</value>
+  </data>
+</root>

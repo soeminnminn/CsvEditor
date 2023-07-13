@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33801.468
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvEditor", "CsvEditor\CsvEditor.csproj", "{810F20A8-E1AE-48F2-B2A5-5841D86652ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vspGridControl", "vspGridControl\vspGridControl.csproj", "{25D73C97-FABB-4628-8E66-BD2BAB472561}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{810F20A8-E1AE-48F2-B2A5-5841D86652ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{810F20A8-E1AE-48F2-B2A5-5841D86652ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{810F20A8-E1AE-48F2-B2A5-5841D86652ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{810F20A8-E1AE-48F2-B2A5-5841D86652ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25D73C97-FABB-4628-8E66-BD2BAB472561}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25D73C97-FABB-4628-8E66-BD2BAB472561}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25D73C97-FABB-4628-8E66-BD2BAB472561}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25D73C97-FABB-4628-8E66-BD2BAB472561}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2DF29685-81F1-4F52-BF46-26248C03675E}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,408 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:CsvEditor.Controls" >
+
+    <SolidColorBrush x:Key="SelectedBorder" Color="#26A0DA" />
+    <SolidColorBrush x:Key="SelectedBackground" Color="#C1DBFC" />
+
+    <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
+
+    <Style x:Key="SystemButtonClose" TargetType="{x:Type Button}">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Margin" Value="0,0,4,0" />
+        <Setter Property="ToolTip" Value="Close (Esc)" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="PART_Border" Background="Transparent" CornerRadius="2">
+                        <Path x:Name="PART_Icon" Fill="{TemplateBinding Foreground}" Height="8" Width="10"
+                                VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill"
+                                Data="F1M0,0L2,0 5,3 8,0 10,0 6,4 10,8 8,8 5,5 2,8 0,8 4,4 0,0z" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="PART_Border" Value="Red" />
+                            <Setter Property="Foreground" Value="{x:Static SystemColors.HighlightTextBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="PART_Icon" Property="Fill" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ExpandButton" TargetType="{x:Type ToggleButton}">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Margin" Value="0,4,0,4" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border x:Name="PART_Border" Background="Transparent" CornerRadius="2">
+                        <Path x:Name="PART_Icon" Fill="{TemplateBinding Foreground}" Height="16" Width="16"
+                                VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill"
+                                Data="F0 M16,16z M0,0z M10.072,8.024L5.715,3.667 6.333,3.047 11,7.716 11,8.334 6.333,13 5.715,12.381 10.072,8.024z" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Data" TargetName="PART_Icon" Value="F0 M16,16z M0,0z M7.976,10.072L12.333,5.715 12.953,6.333 8.284,11 7.666,11 3,6.333 3.619,5.715 7.976,10.072z" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="PART_Border" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="PART_Icon" Property="Fill" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ToolButton" TargetType="{x:Type ButtonBase}">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Padding" Value="3" />
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Margin" Value="0,2,2,2" />
+    </Style>
+
+    <Style x:Key="UpButton" TargetType="{x:Type Button}" BasedOn="{StaticResource ToolButton}">
+        <Setter Property="ToolTip" Value="Previous Match (Shift+Enter)" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="PART_Border" Background="Transparent" CornerRadius="2">
+                        <Path x:Name="PART_Icon" Fill="{TemplateBinding Foreground}" Height="16" Width="16"
+                              VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill"
+                              Data="F0 M16,16z M0,0z M13.854,7L8.854,2 8.147,2 3.147,7 3.854,7.707 8,3.561 8,14 9,14 9,3.56 13.146,7.707 13.854,7z" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="PART_Icon" Property="Fill" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="PART_Border" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DownButton" TargetType="{x:Type Button}" BasedOn="{StaticResource ToolButton}">
+        <Setter Property="ToolTip" Value="Next Match (Enter)" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="PART_Border" Background="Transparent" CornerRadius="2">
+                        <Path x:Name="PART_Icon" Fill="{TemplateBinding Foreground}" Height="16" Width="16"
+                              VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill"
+                              Data="F0 M16,16z M0,0z M3.147,9L8.147,14 8.854,14 13.854,9 13.147,8.293 9,12.439 9,2 8,2 8,12.44 3.854,8.292 3.147,9z" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="PART_Icon" Property="Fill" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="PART_Border" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SelectionButton" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ToolButton}">
+        <Setter Property="ToolTip" Value="Find in Selection" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border x:Name="PART_Border" Background="Transparent" BorderThickness="1" BorderBrush="Transparent" CornerRadius="2">
+                        <Path x:Name="PART_Icon" Fill="{TemplateBinding Foreground}" Height="16" Width="16"
+                                VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill"
+                                Data="F1 M16,16z M0,0z M1,12L1,11 10,11 10,12 1,12z M1,7L15,7 15,8 1,8 1,7z M12,3L12,4 1,4 1,3 12,3z" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource SelectedBorder}" />
+                            <Setter TargetName="PART_Border" Property="Background" Value="{StaticResource SelectedBackground}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="PART_Icon" Property="Fill" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="PART_Border" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ReplaceButton" TargetType="{x:Type Button}" BasedOn="{StaticResource ToolButton}">
+        <Setter Property="ToolTip" Value="Replace (Ctrl+Enter)" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="PART_Border" Background="Transparent" CornerRadius="2">
+                        <Path x:Name="PART_Icon" Fill="{TemplateBinding Foreground}" Height="16" Width="16"
+                              VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill"
+                              Data="F0 M16,16z M0,0z M3.221,3.739L5.482,6.008 7.7,3.784 7,3.084 5.988,4.091 5.98,2.491A0.523,0.523,0,0,1,6.48,1.965L8,1.965 8,1 6.48,1A1.482,1.482,0,0,0,5,2.489L5,4.1 3.927,3.033 3.221,3.739z M9.891,5.533L9.901,5.533C10.084,5.844 10.352,6 10.707,6 11.1,6 11.413,5.832 11.647,5.497 11.883,5.162 12,4.717 12,4.164 12,3.653 11.9,3.251 11.699,2.957 11.498,2.662 11.211,2.515 10.839,2.515 10.434,2.515 10.121,2.709 9.901,3.096L9.891,3.096 9.891,1 9,1 9,5.919 9.89,5.919 9.89,5.533z M9.876,4.472L9.876,4.132C9.876,3.884,9.934,3.684,10.051,3.531A0.54,0.54,0,0,1,10.496,3.301A0.49,0.49,0,0,1,10.932,3.534C11.036,3.688 11.087,3.902 11.087,4.177 11.087,4.507 11.031,4.764 10.918,4.945A0.524,0.524,0,0,1,10.448,5.215A0.495,0.495,0,0,1,10.037,5.004A0.853,0.853,0,0,1,9.877,4.472z M9,12.769C8.744,12.923 8.375,13 7.892,13 7.329,13 6.872,12.822 6.523,12.467 6.174,12.112 6,11.654 6,11.093 6,10.445 6.186,9.935 6.56,9.563 6.934,9.187 7.435,9 8.06,9 8.493,9 8.806,9.06 9,9.179L9,10.177A1.26,1.26,0,0,0,8.208,9.901C7.883,9.901 7.625,10.001 7.434,10.199 7.244,10.395 7.151,10.667 7.151,11.015 7.151,11.353 7.241,11.618 7.423,11.812 7.605,12.003 7.854,12.099 8.172,12.099 8.454,12.099 8.73,12.007 9,11.823L9,12.769z M4,7L3,8 3,14 4,15 11,15 12,14 12,8 11,7 4,7z M4,8L11,8 11,14 4,14 4,8z" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="PART_Icon" Property="Fill" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="PART_Border" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ReplaceAllButton" TargetType="{x:Type Button}" BasedOn="{StaticResource ToolButton}">
+        <Setter Property="ToolTip" Value="Replace All (Ctrl+Alt+Enter)" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="PART_Border" Background="Transparent" CornerRadius="2">
+                        <Path x:Name="PART_Icon" Fill="{TemplateBinding Foreground}" Height="16" Width="16"
+                              VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill"
+                              Data="F0 M16,16z M0,0z M11.6,2.677C11.747,2.367 11.956,2.212 12.226,2.212 12.474,2.212 12.666,2.33 12.799,2.565 12.933,2.801 13,3.122 13,3.531 13,3.974 12.922,4.329 12.765,4.598 12.609,4.866 12.4,5 12.138,5 11.901,5 11.722,4.875 11.601,4.626L11.593,4.626 11.593,4.936 11,4.936 11,1 11.593,1 11.593,2.677 11.601,2.677z M11.584,3.777A0.78,0.78,0,0,0,11.691,4.203C11.762,4.316 11.854,4.372 11.965,4.372 12.101,4.372 12.205,4.3 12.279,4.156 12.354,4.011 12.392,3.806 12.392,3.541 12.392,3.321 12.357,3.151 12.288,3.027 12.221,2.903 12.124,2.84 11.998,2.84 11.878,2.84 11.779,2.902 11.701,3.025A0.886,0.886,0,0,0,11.584,3.505L11.584,3.777z M4.12,7.695L2,5.568 2.662,4.906 3.668,5.906 3.668,4.396A1.39,1.39,0,0,1,5.055,3L7.4,3 7.4,3.905 5.055,3.905A0.49,0.49,0,0,0,4.587,4.398L4.594,5.898 5.543,4.954 6.199,5.61 4.119,7.695z M9.356,4.93L10,4.93 10,3.22C10,2.408 9.685,2 9.056,2 8.921,2 8.771,2.024 8.606,2.073A1.444,1.444,0,0,0,8.218,2.24L8.218,2.905C8.455,2.702 8.705,2.601 8.968,2.601 9.229,2.601 9.36,2.757 9.36,3.07L8.76,3.173C8.254,3.259 8,3.579 8,4.134 8,4.397 8.061,4.607 8.183,4.765A0.61,0.61,0,0,0,8.69,5C8.98,5,9.199,4.84,9.347,4.52L9.356,4.52 9.356,4.93z M9.36,3.575L9.36,3.768A0.75,0.75,0,0,1,9.24,4.204A0.368,0.368,0,0,1,8.927,4.374A0.276,0.276,0,0,1,8.707,4.279A0.38,0.38,0,0,1,8.627,4.031C8.627,3.809,8.737,3.68,8.959,3.642L9.359,3.575z M7,12.93L6.356,12.93 6.356,12.52 6.347,12.52C6.199,12.84,5.98,13,5.69,13A0.61,0.61,0,0,1,5.183,12.765C5.061,12.607 5,12.397 5,12.135 5,11.579 5.254,11.259 5.76,11.173L6.36,11.07C6.36,10.757 6.23,10.6 5.968,10.6 5.705,10.6 5.455,10.702 5.218,10.905L5.218,10.24C5.313,10.177 5.442,10.121 5.606,10.073 5.771,10.024 5.921,10 6.056,10 6.686,10 7,10.407 7,11.22L7,12.93z M6.36,11.768L6.36,11.575 5.96,11.643C5.738,11.68 5.627,11.809 5.627,12.031 5.627,12.131 5.654,12.214 5.707,12.279A0.276,0.276,0,0,0,5.927,12.374A0.368,0.368,0,0,0,6.239,12.204C6.319,12.088,6.359,11.944,6.359,11.768z M9.262,13C9.583,13,9.83,12.942,10,12.827L10,12.117A0.9,0.9,0,0,1,9.448,12.324A0.619,0.619,0,0,1,8.948,12.109C8.828,11.964 8.767,11.764 8.767,11.511 8.767,11.251 8.83,11.047 8.956,10.899A0.644,0.644,0,0,1,9.472,10.676C9.666,10.676,9.842,10.745,10,10.883L10,10.134C9.871,10.044 9.662,10 9.374,10 8.957,10 8.623,10.14 8.373,10.422 8.124,10.702 8,11.084 8,11.57 8,11.99 8.116,12.334 8.349,12.6 8.581,12.867 8.886,13 9.262,13z M2,9L3,8 12,8 13,9 13,14 12,15 3,15 2,14 2,9z M3,9L3,14 12,14 12,9 3,9z M6,7L7,6 14,6 15,7 15,12 14,13 14,7 6,7z" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="PART_Icon" Property="Fill" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="PART_Border" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="CaseButton" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ToolButton}">
+        <Setter Property="ToolTip" Value="Match Case" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border x:Name="PART_Border" Background="Transparent" BorderThickness="1" BorderBrush="Transparent" CornerRadius="2">
+                        <Path x:Name="PART_Icon" Fill="{TemplateBinding Foreground}" Height="16" Width="16"
+                                VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill"
+                                Data="F1 M16,16z M0,0z M8.85352,11.7021L7.85449,11.7021 7.03809,9.54297 3.77246,9.54297 3.00439,11.7021 2,11.7021 4.9541,4 5.88867,4 8.85352,11.7021z M6.74268,8.73193L5.53418,5.4502C5.49479,5.34277,5.4554,5.1709,5.41602,4.93457L5.39453,4.93457C5.35872,5.15299,5.31755,5.32487,5.271,5.4502L4.07324,8.73193 6.74268,8.73193z M13.756,11.7021L12.8752,11.7021 12.8752,10.8428 12.8537,10.8428C12.4706,11.5016 11.9066,11.8311 11.1618,11.8311 10.6139,11.8311 10.1843,11.686 9.87273,11.396 9.56479,11.106 9.41082,10.721 9.41082,10.2412 9.41082,9.21354 10.016,8.61556 11.2262,8.44727L12.8752,8.21631C12.8752,7.28174 12.4974,6.81445 11.7419,6.81445 11.0794,6.81445 10.4815,7.04004 9.94793,7.49121L9.94793,6.58887C10.4886,6.24512 11.1117,6.07324 11.8171,6.07324 13.1097,6.07324 13.756,6.75716 13.756,8.125L13.756,11.7021z M12.8752,8.91992L11.5485,9.10254C11.1403,9.15983 10.8324,9.26188 10.6247,9.40869 10.417,9.55192 10.3132,9.80794 10.3132,10.1768 10.3132,10.4453 10.4081,10.6655 10.5978,10.8374 10.7912,11.0057 11.0472,11.0898 11.3659,11.0898 11.8027,11.0898 12.1626,10.9377 12.4455,10.6333 12.7319,10.3254 12.8752,9.93685 12.8752,9.46777L12.8752,8.91992z" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource SelectedBorder}" />
+                            <Setter TargetName="PART_Border" Property="Background" Value="{StaticResource SelectedBackground}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="PART_Border" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="PART_Icon" Property="Fill" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="WholeWordButton" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ToolButton}">
+        <Setter Property="ToolTip" Value="Match Whole Word" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border x:Name="PART_Border" Background="Transparent" BorderThickness="1" BorderBrush="Transparent" CornerRadius="2">
+                        <Path x:Name="PART_Icon" Fill="{TemplateBinding Foreground}" Height="16" Width="16"
+                                VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill"
+                                Data="F0 M16,16z M0,0z M0,11L1,11 1,13 15,13 15,11 16,11 16,14 15,14 1,14 0,14 0,11z M6.84048,11L5.95963,11 5.95963,10.1406 5.93814,10.1406C5.555,10.7995 4.99104,11.1289 4.24625,11.1289 3.69839,11.1289 3.26871,10.9839 2.95718,10.6938 2.64924,10.4038 2.49527,10.0189 2.49527,9.53906 2.49527,8.51139 3.10041,7.91341 4.3107,7.74512L5.95963,7.51416C5.95963,6.57959 5.58186,6.1123 4.82632,6.1123 4.16389,6.1123 3.56591,6.33789 3.03238,6.78906L3.03238,5.88672C3.57307,5.54297 4.19612,5.37109 4.90152,5.37109 6.19416,5.37109 6.84048,6.05501 6.84048,7.42285L6.84048,11z M5.95963,8.21777L4.63297,8.40039C4.22476,8.45768 3.91682,8.55973 3.70914,8.70654 3.50145,8.84977 3.39761,9.10579 3.39761,9.47461 3.39761,9.74316 3.4925,9.96338 3.68228,10.1353 3.87564,10.3035 4.13166,10.3877 4.45035,10.3877 4.8872,10.3877 5.24706,10.2355 5.52994,9.93115 5.8164,9.62321 5.95963,9.2347 5.95963,8.76562L5.95963,8.21777z M9.3475,10.2051L9.32601,10.2051 9.32601,11 8.44515,11 8.44515,2.85742 9.32601,2.85742 9.32601,6.4668 9.3475,6.4668C9.78076,5.73633 10.4146,5.37109 11.2489,5.37109 11.9543,5.37109 12.5057,5.61816 12.9032,6.1123 13.3042,6.60286 13.5047,7.26172 13.5047,8.08887 13.5047,9.00911 13.2809,9.74674 12.8333,10.3018 12.3857,10.8532 11.7734,11.1289 10.9964,11.1289 10.2695,11.1289 9.71989,10.821 9.3475,10.2051z M9.32601,7.98682L9.32601,8.75488C9.32601,9.20964 9.47282,9.59635 9.76644,9.91504 10.0636,10.2301 10.4396,10.3877 10.8944,10.3877 11.4279,10.3877 11.8451,10.1836 12.1458,9.77539 12.4502,9.36719 12.6024,8.79964 12.6024,8.07275 12.6024,7.46045 12.4609,6.98063 12.1781,6.6333 11.8952,6.28597 11.512,6.1123 11.0286,6.1123 10.5166,6.1123 10.1048,6.29134 9.7933,6.64941 9.48177,7.00391 9.32601,7.44971 9.32601,7.98682z" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource SelectedBorder}" />
+                            <Setter TargetName="PART_Border" Property="Background" Value="{StaticResource SelectedBackground}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="PART_Border" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="PART_Icon" Property="Fill" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="RegexButton" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ToolButton}">
+        <Setter Property="ToolTip" Value="Use Regular Expression" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border x:Name="PART_Border" Background="Transparent" BorderThickness="1" BorderBrush="Transparent" CornerRadius="2">
+                        <Path x:Name="PART_Icon" Fill="{TemplateBinding Foreground}" Height="16" Width="16"
+                                VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill"
+                                Data="F0 M16,16z M0,0z M10.012,2L10.988,2 10.988,5.113 13.548,3.556 14.034,4.441 11.47,6 14.034,7.559 13.549,8.444 10.988,6.887 10.988,10 10.012,10 10.012,6.887 7.452,8.444 6.966,7.559 9.53,6 6.966,4.441 7.451,3.556 10.012,5.113 10.012,2z M2,10L6,10 6,14 2,14 2,10z" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource SelectedBorder}" />
+                            <Setter TargetName="PART_Border" Property="Background" Value="{StaticResource SelectedBackground}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="PART_Border" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="PART_Icon" Property="Fill" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PreserveCaseButton" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ToolButton}">
+        <Setter Property="ToolTip" Value="Preserve Case" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border x:Name="PART_Border" Background="Transparent" BorderThickness="1" BorderBrush="Transparent" CornerRadius="2">
+                        <Path x:Name="PART_Icon" Fill="{TemplateBinding Foreground}" Height="16" Width="16"
+                                VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill"
+                                Data="F1 M16,16z M0,0z M8.51358,11L7.51456,11 6.69815,8.84082 3.43253,8.84082 2.66446,11 1.66006,11 4.61417,3.29785 5.54874,3.29785 8.51358,11z M6.40274,8.02979L5.19424,4.74805C5.15486,4.64062,5.11547,4.46875,5.07608,4.23242L5.0546,4.23242C5.01879,4.45085,4.97761,4.62272,4.93106,4.74805L3.73331,8.02979 6.40274,8.02979z M9.59725,11L9.59725,3.29785 11.7887,3.29785C12.4547,3.29785 12.9828,3.46077 13.3731,3.78662 13.7634,4.11247 13.9586,4.53678 13.9586,5.05957 13.9586,5.49642 13.8404,5.87598 13.6041,6.19824 13.3678,6.52051 13.0419,6.74967 12.6265,6.88574L12.6265,6.90723C13.1458,6.9681 13.5611,7.16504 13.8726,7.49805 14.1842,7.82747 14.3399,8.25716 14.3399,8.78711 14.3399,9.44596 14.1036,9.97949 13.6309,10.3877 13.1583,10.7959 12.5621,11 11.8424,11L9.59725,11z M10.4996,4.11426L10.4996,6.60107 11.4234,6.60107C11.9176,6.60107 12.3061,6.48291 12.589,6.24658 12.8718,6.00667 13.0133,5.67008 13.0133,5.23682 13.0133,4.48844 12.5209,4.11426 11.5362,4.11426L10.4996,4.11426z M10.4996,7.41211L10.4996,10.1836 11.7242,10.1836C12.2542,10.1836 12.6641,10.0583 12.9542,9.80762 13.2478,9.55697 13.3946,9.21322 13.3946,8.77637 13.3946,7.86686 12.7751,7.41211 11.5362,7.41211L10.4996,7.41211z" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource SelectedBorder}" />
+                            <Setter TargetName="PART_Border" Property="Background" Value="{StaticResource SelectedBackground}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="PART_Border" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="PART_Icon" Property="Fill" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="InputBorder" TargetType="{x:Type Border}">
+        <Setter Property="Margin" Value="4,2,4,2" />
+        <Setter Property="Padding" Value="2,0,2,0" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
+    </Style>
+
+    <Style TargetType="{x:Type local:FindAndReplaceBar}">
+        <Setter Property="MinWidth" Value="350" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:FindAndReplaceBar}">
+                    <Button Height="0" Width="{TemplateBinding Width}" VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                        <Popup AllowsTransparency="True" x:Name="PART_Popup" Placement="Bottom" 
+                               IsOpen="{Binding IsOpen, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}">
+                            <local:ThemeShadowChrome x:Name="Shdw" Depth="20">
+                                <Border Width="350" VerticalAlignment="Top" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="3,1,1,1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition x:Name="PART_ReplaceBarRow" />
+                                        </Grid.RowDefinitions>
+
+                                        <ToggleButton Grid.RowSpan="2" Style="{StaticResource ExpandButton}"
+                                                      IsChecked="{Binding IsReplace, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}"/>
+
+                                        <Border Grid.Column="1" Style="{StaticResource InputBorder}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox Grid.Column="0" x:Name="PART_FindInput" BorderThickness="0" VerticalContentAlignment="Center" 
+                                                         Text="{Binding FindText, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}"/>
+                                                <ToggleButton Grid.Column="1" Style="{StaticResource CaseButton}" 
+                                                              IsChecked="{Binding MatchCase, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}" />
+                                                <ToggleButton Grid.Column="2" Style="{StaticResource WholeWordButton}" 
+                                                              IsChecked="{Binding MatchWholeWord, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}"/>
+                                                <ToggleButton Grid.Column="3" Style="{StaticResource RegexButton}" 
+                                                              IsChecked="{Binding UseRegex, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}" />
+                                            </Grid>
+                                        </Border>
+
+                                        <TextBlock Grid.Column="2" VerticalAlignment="Center" Padding="0,0,4,0"
+                                                   Text="{Binding FindCountText, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}"/>
+
+                                        <StackPanel Grid.Column="3" Orientation="Horizontal">
+                                            <Button Style="{StaticResource UpButton}" 
+                                                    Command="{Binding FindPreviousCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}"/>
+                                            <Button Style="{StaticResource DownButton}" 
+                                                    Command="{Binding FindNextCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}"/>
+                                            
+                                            <ToggleButton Style="{StaticResource SelectionButton}" 
+                                                          IsEnabled="{Binding HasSelection, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}"
+                                                          IsChecked="{Binding InSelection, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}"/>
+                                            <Button Style="{StaticResource SystemButtonClose}" Command="ApplicationCommands.Stop" />
+                                        </StackPanel>
+
+                                        <Border Grid.Column="1" Grid.Row="2" Style="{StaticResource InputBorder}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                
+                                                <TextBox Grid.Column="0" x:Name="PART_ReplaceInput" BorderThickness="0" VerticalContentAlignment="Center" 
+                                                         Text="{Binding ReplaceText, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}" />
+                                                <ToggleButton Grid.Column="1" Style="{StaticResource PreserveCaseButton}" 
+                                                              IsChecked="{Binding PreserveCase, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}" />
+                                            </Grid>
+                                        </Border>
+
+                                        <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal">
+                                            <Button Style="{StaticResource ReplaceButton}" 
+                                                    Command="{Binding ReplaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}"/>
+                                            <Button Style="{StaticResource ReplaceAllButton}" 
+                                                    Command="{Binding ReplaceAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </local:ThemeShadowChrome>
+                        </Popup>
+                    </Button>
+                    <ControlTemplate.Triggers>
+                        <Trigger SourceName="PART_Popup" Property="Popup.HasDropShadow" Value="true">
+                            <Setter TargetName="Shdw" Property="IsShadowEnabled" Value="True" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+</ResourceDictionary>
