@@ -25,7 +25,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" TargetName="PART_Border" Value="Red" />
+                            <Setter Property="Background" TargetName="PART_Border" Value="#FFF44336" />
                             <Setter Property="Foreground" Value="{x:Static SystemColors.HighlightTextBrush}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">

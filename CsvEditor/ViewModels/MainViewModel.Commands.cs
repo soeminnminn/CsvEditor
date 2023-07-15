@@ -34,6 +34,9 @@ namespace CsvEditor.ViewModels
 
         private Window mainWindow = Application.Current.MainWindow;
 
+        private bool showToolbar = true;
+        private bool showStatusbar = true;
+
         private IRecentFilesMenu recentFilesMenu;
 
         private ICommand newCommand = null;
@@ -54,6 +57,32 @@ namespace CsvEditor.ViewModels
         #endregion
 
         #region Properties
+        public bool ShowToolbar
+        {
+            get => showToolbar;
+            set
+            {
+                SetProperty(ref showToolbar, value, nameof(ShowToolbar), () =>
+                {
+                    if (config.IsLoaded)
+                        config.ShowToolbar = value;
+                });
+            }
+        }
+
+        public bool ShowStatusbar
+        {
+            get => showStatusbar;
+            set
+            {
+                SetProperty(ref showStatusbar, value, nameof(ShowStatusbar), () =>
+                {
+                    if (config.IsLoaded)
+                        config.ShowStatusbar = value;
+                });
+            }
+        }
+
         public IRecentFilesMenu RecentFilesMenu { get => recentFilesMenu; }
 
         public ICommand NewCommand { get => newCommand; }

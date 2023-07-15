@@ -18,6 +18,7 @@ namespace CsvEditor.Views
             if (DataContext is SettingsViewModel model)
                 model.Save();
 
+            DialogResult = true;
             Close();
         }
     }

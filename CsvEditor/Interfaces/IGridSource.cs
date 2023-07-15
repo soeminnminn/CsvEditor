@@ -20,6 +20,8 @@ namespace CsvEditor
 
         void FocusOnGrid();
 
+        void UpdateGridFont();
+
         void UpdateGrid(bool reset = true);
 
         void UpdateGridColumns(bool updateGrid = true);

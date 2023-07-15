@@ -17,41 +17,31 @@ namespace CsvEditor.Views
     public partial class MainWindow : Window
     {
         #region Variables
-        private MainViewModel model = new MainViewModel();
         #endregion
 
         #region Constructors
+        static MainWindow()
+        {
+            DataContextProperty.OverrideMetadata(typeof(MainWindow), new FrameworkPropertyMetadata(OnDataContextChanged));
+        }
+
         public MainWindow()
         {
             InitializeComponent();
 
-            model.Initialize();
-            model.InitializeCommands(this, menuRecentFiles);
-            model.InitializeGrid(gridCtrl);
-
-            DataContext = model;
-
-            gridColumnHeaderMenu.ContextMenu.DataContext = model;
             gridColumnHeaderMenu.ContextMenu.ContextMenuOpening += ContextMenu_Opening;
-
-            gridRowHeaderMenu.ContextMenu.DataContext = model;
             gridRowHeaderMenu.ContextMenu.ContextMenuOpening += ContextMenu_Opening;
-
-            model.FileLoaded += Model_FileLoaded;
-            model.FileClosed += Model_FileClosed;
-            model.FileEdited += Model_FileEdited;
-            model.SelectionChanged += Model_SelectionChanged;
 
             gridCtrl.MouseButtonClicked += Grid_MouseButtonClicked;
             gridCtrl.HeaderButtonClicked += Grid_HeaderButtonClicked;
 
             goToDlg.Accepted += GoToDlg_Accepted;
 
-            CommandBindings.Add(new CommandBindingLink(ApplicationCommands.New, model.NewCommand));
-            CommandBindings.Add(new CommandBindingLink(ApplicationCommands.Open, model.OpenCommand));
+            CommandBindings.Add(new CommandBinding(ApplicationCommands.New, NewCommand_Executed));
+            CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OpenCommand_Executed));
 
-            CommandBindings.Add(new CommandBindingLink(ApplicationCommands.Save, model.SaveCommand));
-            CommandBindings.Add(new CommandBindingLink(ApplicationCommands.SaveAs, model.SaveAsCommand));
+            CommandBindings.Add(new CommandBinding(ApplicationCommands.Save, SaveCommand_Executed, Save_CanExecute));
+            CommandBindings.Add(new CommandBinding(ApplicationCommands.SaveAs, SaveAsCommand_Executed, SaveAs_CanExecute));
 
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, PrintCommand_Executed, Print_CanExecute));
             CommandBindings.Add(new CommandBinding(ApplicationCommands.PrintPreview, PrintPreviewCommand_Executed, PrintPreview_CanExecute));
@@ -78,16 +68,64 @@ namespace CsvEditor.Views
         }
         #endregion
 
-        #region Methods
-        protected override void OnClosing(CancelEventArgs e)
+        #region Properties
+        private MainViewModel Model
         {
-            e.Cancel = model.SaveConfirm();
+            get => (MainViewModel)DataContext;
+        }
+        #endregion
 
-            if (!e.Cancel)
+        #region Methods
+        private static void OnDataContextChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
+        {
+            if (o is MainWindow c)
+                c.OnDataContextChanged(e);
+        }
+
+        private void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
+        {
+            var oldModel = e.OldValue as MainViewModel;
+            if (oldModel != null)
             {
-                model.Dispose();
+                oldModel.FileLoaded -= Model_FileLoaded;
+                oldModel.FileClosed -= Model_FileClosed;
+                oldModel.FileEdited -= Model_FileEdited;
+                oldModel.SelectionChanged -= Model_SelectionChanged;
+                oldModel.Dispose();
             }
 
+            if (Model == null)
+            {
+                if (IsInitialized)
+                {
+                    Close();
+                }
+                return;
+            }
+
+            Model.InitializeCommands(this, menuRecentFiles);
+            Model.InitializeGrid(gridCtrl);
+
+            gridColumnHeaderMenu.ContextMenu.DataContext = Model;
+            gridRowHeaderMenu.ContextMenu.DataContext = Model;
+
+            Model.FileLoaded += Model_FileLoaded;
+            Model.FileClosed += Model_FileClosed;
+            Model.FileEdited += Model_FileEdited;
+            Model.SelectionChanged += Model_SelectionChanged;
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (Model != null)
+            {
+                e.Cancel = Model.SaveConfirm();
+
+                if (!e.Cancel)
+                {
+                    Model.Dispose();
+                }
+            }
             base.OnClosing(e);
         }
 
@@ -104,13 +142,13 @@ namespace CsvEditor.Views
             if (e.Data != null)
             {
                 string[] files = (string[])e.Data.GetData("FileDrop");
-                if ((files != null) && (files.Length > 0))
+                if (Model != null && files != null && files.Length > 0)
                 {
                     var filePath = files.Where(f => MainViewModel.IsSupportedFile(f)).ToArray().FirstOrDefault();
                     if (!string.IsNullOrEmpty(filePath))
                     {
-                        if (model.SaveConfirm()) return;
-                        model.LoadFile(filePath);
+                        if (Model.SaveConfirm()) return;
+                        Model.LoadFile(filePath);
                     }
                 }
             }
@@ -118,8 +156,11 @@ namespace CsvEditor.Views
 
         private void GoToDlg_Accepted(object sender, RoutedGotoEventArgs e)
         {
-            model.GoToLine((int)e.Y, (int)e.X);
-            model.FocusOnGrid();
+            if (Model != null)
+            {
+                Model.GoToLine((int)e.Y, (int)e.X);
+                Model.FocusOnGrid();
+            }
         }
         #endregion
 
@@ -128,11 +169,11 @@ namespace CsvEditor.Views
         {
             if (args.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                model.SelectColumn(args.ColumnIndex);
+                Model.SelectColumn(args.ColumnIndex);
             }
             else if (args.Button == System.Windows.Forms.MouseButtons.Right)
             {
-                model.ClickedColumnIndex = args.ColumnIndex;
+                Model.ClickedColumnIndex = args.ColumnIndex;
                 gridColumnHeaderMenu.ContextMenu.IsOpen = true;
             }
         }
@@ -143,11 +184,11 @@ namespace CsvEditor.Views
             {
                 if (args.Button == System.Windows.Forms.MouseButtons.Right)
                 {
-                    model.ClickedRowIndex = (int)args.RowIndex;
+                    Model.ClickedRowIndex = (int)args.RowIndex;
                     gridRowHeaderMenu.ContextMenu.IsOpen = true;
                 }
 
-                model.SelectRow(args.RowIndex);
+                Model.SelectRow(args.RowIndex);
             }
         }
 
@@ -159,12 +200,12 @@ namespace CsvEditor.Views
                 {
                     if (i is MenuItem mi && mi.Command != null)
                     {
-                        if (mi.Command == model.RemoveRow)
-                            mi.IsEnabled = model.Count > 1;
-                        else if (mi.Command == model.RemoveColumn)
-                            mi.IsEnabled = model.ColumnsCount > 1;
-                        else if (mi.Command == model.SortAscending || mi.Command == model.SortDescending)
-                            mi.IsEnabled = model.HasData;
+                        if (mi.Command == Model.RemoveRow)
+                            mi.IsEnabled = Model.Count > 1;
+                        else if (mi.Command == Model.RemoveColumn)
+                            mi.IsEnabled = Model.ColumnsCount > 1;
+                        else if (mi.Command == Model.SortAscending || mi.Command == Model.SortDescending)
+                            mi.IsEnabled = Model.HasData;
                     }
                 }
             }
@@ -172,15 +213,15 @@ namespace CsvEditor.Views
 
         private void ContextMenu_Closed(object sender, RoutedEventArgs e)
         {
-            model.ClickedColumnIndex = -1;
-            model.ClickedRowIndex = -1;
+            Model.ClickedColumnIndex = -1;
+            Model.ClickedRowIndex = -1;
         }
         #endregion
 
         #region Models Events Methods
         private void Model_FileLoaded(object sender, EventArgs e)
         {
-            Title = $"{Properties.Resources.Title} - {model.CurrentFileName}";
+            Title = $"{Properties.Resources.Title} - {Model.CurrentFileName}";
             statusLabelSelect.Text = "Row: 0, Cell: 0";
         }
 
@@ -191,7 +232,7 @@ namespace CsvEditor.Views
 
         private void Model_FileEdited(object sender, bool e)
         {
-            string title = $"{Properties.Resources.Title} - {model.CurrentFileName}";
+            string title = $"{Properties.Resources.Title} - {Model.CurrentFileName}";
             Title = e ? title + "*" : title;
         }
 
@@ -202,9 +243,39 @@ namespace CsvEditor.Views
         #endregion
 
         #region Commands Methods
+        private void NewCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Model?.OnNewFileExecuted();
+        }
+
+        private void OpenCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Model?.OnOpenFileExecuted();
+        }
+
+        private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = Model != null && Model.IsEdited;
+        }
+
+        private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Model?.OnSaveExecuted();
+        }
+
+        private void SaveAs_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = Model != null && Model.IsLoaded;
+        }
+
+        private void SaveAsCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Model?.OnSaveAsExecuted();
+        }
+
         private void Print_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = model.HasData && model.ItemsSource.Count > 1;
+            e.CanExecute = Model != null && Model.HasData && Model.ItemsSource.Count > 1;
         }
 
         private void PrintCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -214,7 +285,7 @@ namespace CsvEditor.Views
 
         private void PrintPreview_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = model.HasData && model.ItemsSource.Count > 1;
+            e.CanExecute = Model != null && Model.HasData && Model.ItemsSource.Count > 1;
         }
 
         private void PrintPreviewCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -229,116 +300,132 @@ namespace CsvEditor.Views
 
         private void Undo_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = model.CanUndo();
+            e.CanExecute = Model != null && Model.CanUndo();
         }
 
         private void UndoCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            model.OnUndoExecuted();
+            Model?.OnUndoExecuted();
         }
 
         private void Redo_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = model.CanRedo();
+            e.CanExecute = Model != null && Model.CanRedo();
         }
 
         private void RedoCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            model.OnRedoExecuted();
+            Model?.OnRedoExecuted();
         }
 
         private void Cut_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = model.HasData && (model.HasSelections || model.IsACellBeingEdited);
+            e.CanExecute = Model != null && Model.HasData && (Model.HasSelections || Model.IsACellBeingEdited);
         }
 
         private void CutCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            model.CopyToCilpboard(true);
-            model.FocusOnGrid();
+            Model?.CopyToCilpboard(true);
+            Model?.FocusOnGrid();
         }
 
         private void Copy_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = model.HasData && (model.HasSelections || model.IsACellBeingEdited);
+            e.CanExecute = Model != null && Model.HasData && (Model.HasSelections || Model.IsACellBeingEdited);
         }
 
         private void CopyCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            model.CopyToCilpboard();
-            model.FocusOnGrid();
+            Model?.CopyToCilpboard();
+            Model?.FocusOnGrid();
         }
 
         private void Paste_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = model.HasData && model.HasSelections && Clipboard.ContainsText();
+            e.CanExecute = Model != null && Model.HasData && Model.HasSelections && Clipboard.ContainsText();
         }
 
         private void PasteCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            model.FocusOnGrid();
-            model.PasteFromCilpboard();
+            Model?.FocusOnGrid();
+            Model?.PasteFromCilpboard();
         }
 
         private void Delete_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = model.HasData && (model.HasSelections || model.IsACellBeingEdited);
+            e.CanExecute = Model != null && Model.HasData && (Model.HasSelections || Model.IsACellBeingEdited);
         }
 
         private void DeleteCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            model.DeleteSelected();
-            model.FocusOnGrid();
+            Model?.DeleteSelected();
+            Model?.FocusOnGrid();
         }
 
         private void FindAndReplace_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = model.HasData;
+            e.CanExecute = Model != null && Model.HasData;
         }
 
         private void FindCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            model.CreateFindAndReplace(findAndReplaceDlg);
-            findAndReplaceDlg.Show(false);
+            if (Model != null)
+            {
+                Model.CreateFindAndReplace(findAndReplaceDlg);
+                findAndReplaceDlg.Show(false);
+            }
         }
 
         private void ReplaceCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            model.CreateFindAndReplace(findAndReplaceDlg);
-            findAndReplaceDlg.Show(true);
+            if (Model != null)
+            {
+                Model.CreateFindAndReplace(findAndReplaceDlg);
+                findAndReplaceDlg.Show(true);
+            }   
         }
 
         private void Goto_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = model.HasData;
+            e.CanExecute = Model != null && Model.HasData;
         }
 
         private void GotoCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            goToDlg.XValue = 0;
-            goToDlg.YValue = 0;
-            goToDlg.Show(model.ItemsSource.Count, model.ColumnsCount - 1);
+            if (Model != null)
+            {
+                goToDlg.XValue = 0;
+                goToDlg.YValue = 0;
+                goToDlg.Show(Model.ItemsSource.Count, Model.ColumnsCount - 1);
+            }   
         }
 
         private void SelectAll_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = model.HasData;
+            e.CanExecute = Model != null && Model.HasData;
         }
 
         private void SelectAllCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            model.SelectAll();
-            model.FocusOnGrid();
+            Model?.SelectAll();
+            Model?.FocusOnGrid();
         }
 
         private void SettingsCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var dialog = new SettingsWindow()
+            if (Model != null)
             {
-                Owner = this,
-                DataContext = new SettingsViewModel(model.Config),
-            };
-            dialog.ShowDialog();
+                var dialog = new SettingsWindow()
+                {
+                    Owner = this,
+                    DataContext = new SettingsViewModel(Model.Config),
+                };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    Model.UpdateGridFont();
+                }
+            }
         }
 
         private void AboutCommand_Executed(object sender, ExecutedRoutedEventArgs e)

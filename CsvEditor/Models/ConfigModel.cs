@@ -27,8 +27,13 @@ namespace CsvEditor.Models
 
         private bool showToolbar = true;
         private bool showStatusbar = true;
+        
         private string defaultDelimiter = ",";
+        
         private int defaultEncoding = -1;
+        private bool useEncodingWithBom = false;
+        private bool useDefaultEncoding = false;
+
         private string editorFontFamily = "";
         private double editorFontSize = 0;
 
@@ -49,7 +54,7 @@ namespace CsvEditor.Models
 
             defaultEncoding = Encoding.UTF8.CodePage;
 
-            var font = FontPickerItem.Deafult;
+            var font = FontModel.Default;
             editorFontFamily = font.FamilyName;
             editorFontSize = font.Size;
         }
@@ -116,6 +121,18 @@ namespace CsvEditor.Models
         {
             get => defaultEncoding < 0 ? Encoding.UTF8 : Encoding.GetEncoding(defaultEncoding);
             set { defaultEncoding = value.CodePage; }
+        }
+
+        public bool UseEncodingWithBom
+        {
+            get => useEncodingWithBom;
+            set { useEncodingWithBom = value; }
+        }
+
+        public bool UseDefaultEncoding
+        {
+            get => useDefaultEncoding;
+            set { useDefaultEncoding = value; }
         }
 
         public string EditorFontFamily
@@ -304,6 +321,12 @@ namespace CsvEditor.Models
                 if (generalSection["DefaultEncoding"].TryGetValue(out int codePage) && codePage > 0)
                     defaultEncoding = codePage;
 
+                if (generalSection["UseEncodingWithBom"].TryGetValue(out bool withBom))
+                    useEncodingWithBom = withBom;
+
+                if (generalSection["UseDefaultEncoding"].TryGetValue(out bool useEncoding))
+                    useDefaultEncoding = useEncoding;
+
                 var uiSection = config["UI"];
 
                 if (uiSection["ShowToolbar"].TryGetValue(out bool toolbar))
@@ -356,6 +379,8 @@ namespace CsvEditor.Models
 
                 generalSection.Add("DefaultDelimiter", defaultDelimiter.Replace("\t", "\\t"));
                 generalSection.Add("DefaultEncoding", defaultEncoding);
+                generalSection.Add("UseEncodingWithBom", useEncodingWithBom);
+                generalSection.Add("UseDefaultEncoding", useDefaultEncoding);
 
                 var uiSection = config.Add("UI");
 

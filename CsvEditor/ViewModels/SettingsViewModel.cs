@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Markup;
-using System.Windows.Media;
 using CsvEditor.Commands;
 using CsvEditor.Models;
 using CsvEditor.Observable;
@@ -19,9 +15,13 @@ namespace CsvEditor.ViewModels
         #region Variables
         private readonly ConfigModel config;
 
-        private DelimiterItem delimiter = DelimiterItem.Default;
-        private EncodingInfo encoding = null;
-        private FontPickerItem font = FontPickerItem.Deafult;
+        private DelimiterModel delimiter = DelimiterModel.Default;
+
+        private EncodingModel encoding = null;
+        private bool useEncodingWithBom = false;
+        private bool useDefaultEncoding = false;
+
+        private FontModel font = FontModel.Default;
 
         private readonly ICommand pickFontCommand;
         #endregion
@@ -33,37 +33,69 @@ namespace CsvEditor.ViewModels
 
             var currentEncoding = config.DefaultEncoding;
             encoding = Encodings.FirstOrDefault(x => x.CodePage == currentEncoding.CodePage);
+            useEncodingWithBom = config.UseEncodingWithBom;
+            useDefaultEncoding = config.UseDefaultEncoding;
 
             delimiter = Delimiters.FirstOrDefault(x => x.Equals(config.DefaultDelimiter));
+
+            if (!string.IsNullOrEmpty(config.EditorFontFamily))
+                font = new FontModel(config.EditorFontFamily, config.EditorFontSize);
 
             pickFontCommand = new Command(PickFont_Executed);
         }
         #endregion
 
         #region Properties
-        public DelimiterItem[] Delimiters
+        public DelimiterModel[] Delimiters
         {
-            get => DelimiterItem.Delimiters;
+            get => DelimiterModel.Delimiters;
         }
 
-        public DelimiterItem Delimiter
+        public DelimiterModel Delimiter
         {
             get => delimiter;
             set { SetProperty(ref delimiter, value); }
         }
 
-        public EncodingInfo[] Encodings
+        public EncodingModel[] Encodings
         {
-            get => System.Text.Encoding.GetEncodings();
+            get => EncodingModel.Encodings;
         }
 
-        public EncodingInfo Encoding
+        public EncodingModel Encoding
         {
             get => encoding;
-            set { SetProperty(ref encoding, value); }
+            set 
+            { 
+                SetProperty(ref encoding, value, nameof(Encoding), () => 
+                {
+                    PostPropertyChanged(nameof(EncodingHasBom));
+                }); 
+            }
         }
 
-        public FontPickerItem EditorFont
+        public bool EncodingHasBom
+        {
+            get
+            {
+                if (Encoding == null) return false;
+                return Encoding.HasBOM;
+            }
+        }
+
+        public bool UseEncodingWithBom
+        {
+            get => useEncodingWithBom;
+            set { SetProperty(ref useEncodingWithBom, value); }
+        }
+
+        public bool UseDefaultEncoding
+        {
+            get => useDefaultEncoding;
+            set { SetProperty(ref useDefaultEncoding, value); }
+        }
+
+        public FontModel EditorFont
         {
             get => font;
             private set { SetProperty(ref font, value); }
@@ -88,19 +120,39 @@ namespace CsvEditor.ViewModels
                 var chooseFont = dialog.Font;
                 if (chooseFont != null)
                 {
-                    EditorFont = new FontPickerItem(chooseFont);
+                    EditorFont = new FontModel(chooseFont);
                 }
             }
         }
 
         public void Save()
         {
-            config.DefaultDelimiter = Delimiter.Delimiter;
-            config.DefaultEncoding = Encoding.GetEncoding();
+            config.DefaultDelimiter = delimiter.Delimiter;
+
+            config.DefaultEncoding = encoding.Encoding;
+            config.UseEncodingWithBom = useEncodingWithBom;
+            config.UseDefaultEncoding = useDefaultEncoding;
+            
+            config.EditorFontFamily = font.Name;
+            config.EditorFontSize = font.Size;
         }
 
         public void Dispose()
         {
+        }
+        #endregion
+
+        #region Nested Types
+        private class EncodingInfoComparer : IComparer<EncodingInfo>
+        {
+            public int Compare(EncodingInfo x, EncodingInfo y)
+            {
+                if (x == null && y == null) return 0;
+                if (x == null && y != null) return -1;
+                if (x != null && y == null) return 1;
+
+                return string.Compare(x.DisplayName, y.DisplayName);
+            }
         }
         #endregion
     }

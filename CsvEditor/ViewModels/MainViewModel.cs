@@ -31,7 +31,8 @@ namespace CsvEditor.ViewModels
         private string stateMessage = "Ready";
         private string currentFile = string.Empty;
         private Encoding encoding = Encoding.Default;
-        private string delimiter = ",";
+        private bool hasBOM = false;
+        private string delimiter = string.Empty;
         private int columnsCount = 0;
         private bool isEdited = false;
         private bool hasHeader = false;
@@ -148,6 +149,7 @@ namespace CsvEditor.ViewModels
             syncContext = SynchronizationContext.Current;
 
             config = new ConfigModel();
+            LoadConfig();
 
             watcher = new FileWatcher();
             watcher.Changed += Watcher_Changed;
@@ -199,6 +201,8 @@ namespace CsvEditor.ViewModels
                 var file = new FileInfo(fileName);
                 if (file.Exists)
                 {
+                    var defaultDelimiter = string.IsNullOrEmpty(config.DefaultDelimiter) ? "," : config.DefaultDelimiter;
+
                     using (var fs = file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     {
                         var detectResult = CharsetDetector.DetectFromStream(fs);
@@ -215,9 +219,9 @@ namespace CsvEditor.ViewModels
                             result.Data = new List<string[]>();
 
                             fs.Seek(0, SeekOrigin.Begin);
-                            using (var sr = new StreamReader(fs, detectResult.Detected.Encoding))
+                            using (var sr = new StreamReader(fs, result.Encoding))
                             {
-                                var reader = new Csv.CsvReader(sr);
+                                var reader = new Csv.CsvReader(sr, defaultDelimiter, true);
                                 result.Delimiter = reader.Delimiter;
 
                                 while (reader.Read())
@@ -250,6 +254,7 @@ namespace CsvEditor.ViewModels
             {
                 CurrentFile = result.FilePath;
                 Encoding = result.Encoding;
+                hasBOM = result.HasBOM;
                 Delimiter = result.Delimiter;
 
                 watcher.Watch(result.FilePath);
@@ -297,17 +302,25 @@ namespace CsvEditor.ViewModels
             return false;
         }
 
-        public async void Initialize()
+        public async void LoadConfig()
         {
             await config.LoadAsync().ConfigureAwait(true);
 
-            if (this is IUiModel uiModel)
+            if (this is IModelCommands uiModel)
             {
                 uiModel.ShowToolbar = config.ShowToolbar;
                 uiModel.ShowStatusbar = config.ShowStatusbar;
             }
 
-            var args = Environment.GetCommandLineArgs();
+            if (this is IGridSource gridSource)
+                gridSource.UpdateGridFont();
+
+            Delimiter = config.DefaultDelimiter;
+            Encoding = config.DefaultEncoding;
+        }
+
+        public void TryLoadCommandLine(string[] args)
+        {
             if (args != null && args.Length > 1)
             {
                 var filePath = args.Where(f => IsSupportedFile(f)).ToArray().FirstOrDefault();
@@ -389,11 +402,22 @@ namespace CsvEditor.ViewModels
 
             var ext = Path.GetExtension(filePath)?.ToLower();
 
-            string delimiter = this.Delimiter;
+            string delimiter = Delimiter;
             if (ext == ".csv")
                 delimiter = ",";
             else if (ext == ".tsv")
                 delimiter = "\t";
+            else
+                delimiter = string.IsNullOrEmpty(config.DefaultDelimiter) ? "," : config.DefaultDelimiter;
+
+            var encoding = new EncodingModel(Encoding);
+            bool withBom = hasBOM;
+
+            if (config.UseDefaultEncoding)
+            {
+                encoding = new EncodingModel(config.DefaultEncoding);
+                withBom = config.UseEncodingWithBom;
+            }            
 
             StateMessage = "Saving";
 
@@ -401,8 +425,11 @@ namespace CsvEditor.ViewModels
             {
                 try
                 {
-                    using (var sw = new StreamWriter(filePath, false, Encoding, 1024))
+                    using (var sw = new StreamWriter(filePath, false, encoding.Encoding, 1024))
                     {
+                        if (withBom && encoding.HasBOM)
+                            sw.BaseStream.Write(encoding.BOM, 0, encoding.BOM.Length);
+
                         using (var writer = new Csv.CsvWriter(sw, delimiter))
                         {
                             foreach (var row in items)

@@ -2,22 +2,22 @@
 
 namespace CsvEditor.Models
 {
-    public class DelimiterItem
+    public class DelimiterModel
     {
         #region Variables
-        public static readonly DelimiterItem[] Delimiters = new DelimiterItem[]
+        public static readonly DelimiterModel[] Delimiters = new DelimiterModel[]
         {
-            new DelimiterItem(",", "Comma"),
-            new DelimiterItem(";", "Semicolon"),
-            new DelimiterItem("|", "Vertical Line"),
-            new DelimiterItem("\t", "Tab"),
+            new DelimiterModel(",", "Comma"),
+            new DelimiterModel(";", "Semicolon"),
+            new DelimiterModel("|", "Vertical Line"),
+            new DelimiterModel("\t", "Tab"),
         };
 
-        public static readonly DelimiterItem Default = new DelimiterItem(",", "Comma");
+        public static readonly DelimiterModel Default = new DelimiterModel(",", "Comma");
         #endregion
 
         #region Constructor
-        public DelimiterItem(string delimiter, string name)
+        public DelimiterModel(string delimiter, string name)
         {
             Delimiter = delimiter;
             Name = name;
@@ -41,7 +41,7 @@ namespace CsvEditor.Models
 
             if (obj is string str)
                 return str == Delimiter;
-            else if (obj is DelimiterItem item)
+            else if (obj is DelimiterModel item)
                 return item.Delimiter == Delimiter;
 
             return base.Equals(obj);

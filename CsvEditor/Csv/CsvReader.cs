@@ -25,7 +25,7 @@ namespace CsvEditor.Csv
         {
         }
 
-        public CsvReader(string text, string delimiter)
+        public CsvReader(string text, string delimiter, bool detectDelimiter = false)
         {
             if (string.IsNullOrEmpty(text))
                 throw new ArgumentException("Text cannot be empty.");
@@ -33,7 +33,11 @@ namespace CsvEditor.Csv
             if (string.IsNullOrEmpty(delimiter))
                 throw new ArgumentException("Delimiter cannot be empty.");
 
-            Delimiter = delimiter;
+            if (detectDelimiter)
+                Delimiter = DetectDelimiter(text, delimiter);
+            else
+                Delimiter = delimiter;
+
             rdr = new StringReader(text);
 
             parser = new TextFieldParser(rdr);
@@ -47,7 +51,8 @@ namespace CsvEditor.Csv
                 throw new ArgumentException("reader cannot be null.");
 
             var text = reader.ReadToEnd();
-            Delimiter = DetectDelimiter(text);
+            string detected = DetectDelimiter(text);
+            Delimiter = detected;
 
             rdr = new StringReader(text);
             parser = new TextFieldParser(rdr);
@@ -55,7 +60,7 @@ namespace CsvEditor.Csv
             parser.SetCommentTokens(CommentCharacter);
         }
 
-        public CsvReader(TextReader reader, string delimiter)
+        public CsvReader(TextReader reader, string delimiter, bool detectDelimiter = false)
         {
             if (reader == null)
                 throw new ArgumentException("reader cannot be null.");
@@ -63,8 +68,18 @@ namespace CsvEditor.Csv
             if (string.IsNullOrEmpty(delimiter))
                 throw new ArgumentException("Delimiter cannot be empty.");
 
-            Delimiter = delimiter;
-            rdr = reader;
+            if (detectDelimiter)
+            {
+                var text = reader.ReadToEnd();
+                Delimiter = DetectDelimiter(text, delimiter);
+                rdr = new StringReader(text);
+            }
+            else
+            {
+                Delimiter = delimiter;
+                rdr = reader;
+            }
+            
             parser = new TextFieldParser(rdr);
             parser.SetDelimiters(Delimiter);
             parser.SetCommentTokens(CommentCharacter);
@@ -98,7 +113,7 @@ namespace CsvEditor.Csv
         #endregion
 
         #region Methods
-        private static string DetectDelimiter(string csvText)
+        public static string DetectDelimiter(string csvText, string defaultDelimiter = ",")
         {
             var text = Regex.Replace(csvText, $"\".*?\"", string.Empty, RegexOptions.Singleline);
             text = Regex.Replace(text, @"^#[^\n]+", string.Empty, RegexOptions.Singleline);
@@ -153,8 +168,8 @@ namespace CsvEditor.Csv
                 }
             ).ToList();
 
-            string newDelimiter = delimiters.Select(x => x.Delimiter).FirstOrDefault();
-            return newDelimiter ?? ",";
+            string result = delimiters.Select(x => x.Delimiter).FirstOrDefault();
+            return string.IsNullOrEmpty(result) ? defaultDelimiter : result;
         }
 
         public bool Read()

@@ -6,13 +6,12 @@
         xmlns:local="clr-namespace:CsvEditor.Views"
         xmlns:viewmodels="clr-namespace:CsvEditor.ViewModels"
         xmlns:model="clr-namespace:CsvEditor.Models"
-        xmlns:text="clr-namespace:System.Text;assembly=mscorlib"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
-        Title="Settings" Height="350" Width="400" >
+        Title="Settings" Height="350" Width="450" >
     
     <DockPanel>
         <DockPanel.Resources>
@@ -22,11 +21,11 @@
                 <Setter Property="Margin" Value="8" />
             </Style>
 
-            <DataTemplate DataType="{x:Type text:EncodingInfo}">
+            <DataTemplate DataType="{x:Type model:EncodingModel}">
                 <TextBlock Text="{Binding DisplayName}" />
             </DataTemplate>
 
-            <DataTemplate x:Key="fontPickerButton" DataType="{x:Type model:FontPickerItem}">
+            <DataTemplate x:Key="fontPickerButton" DataType="{x:Type model:FontModel}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -48,7 +47,7 @@
             <GroupBox Header="General" Margin="8">
                 <Grid Margin="16" VerticalAlignment="Top">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
@@ -59,14 +58,19 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
 
-                    <Label Content="Default Delimiter" VerticalAlignment="Center" />
-                    <ComboBox Grid.Column="1" ItemsSource="{Binding Delimiters}" SelectedItem="{Binding Delimiter, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,4,0,4"/>
+                    <Label Content="Default _Delimiter" VerticalAlignment="Center" Target="{Binding ElementName=cboDelimiter}" />
+                    <ComboBox x:Name="cboDelimiter" Grid.Column="1" ItemsSource="{Binding Delimiters}" SelectedItem="{Binding Delimiter, Mode=TwoWay}" VerticalAlignment="Center" Margin="4,4,0,4"/>
 
-                    <Label Grid.Row="1" Content="Default Encoding" VerticalAlignment="Center" />
-                    <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Encodings}" SelectedItem="{Binding Encoding, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,4,0,4" />
+                    <Label Grid.Row="1" Content="Default _Encoding" VerticalAlignment="Center" Target="{Binding ElementName=cboEncoding}" />
+                    <ComboBox x:Name="cboEncoding" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Encodings}" SelectedItem="{Binding Encoding, Mode=TwoWay}" VerticalAlignment="Center" Margin="4,4,0,4" />
 
-                    <Label Grid.Row="2" Content="Editor Font" VerticalAlignment="Center" />
-                    <Button Grid.Row="2" Grid.Column="1" Content="{Binding EditorFont}" ContentTemplate="{StaticResource fontPickerButton}" HorizontalContentAlignment="Stretch" VerticalAlignment="Center" Margin="0,4,0,4" Command="{Binding PickFontCommand}" />
+                    <CheckBox Grid.Row="2" Grid.Column="1" Content="With _BOM" IsChecked="{Binding UseEncodingWithBom, Mode=TwoWay}" IsEnabled="{Binding EncodingHasBom}" VerticalAlignment="Center" Margin="4,4,0,4" />
+
+                    <Label Grid.Row="3" Content="_Use Default Encoding on Save" VerticalAlignment="Center" Target="{Binding ElementName=chkUseEncoding}" />
+                    <CheckBox x:Name="chkUseEncoding" Grid.Row="3" Grid.Column="1" IsChecked="{Binding UseDefaultEncoding, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4,4,0,4" />
+
+                    <Label Grid.Row="4" Content="Editor _Font" VerticalAlignment="Center" Target="{Binding ElementName=btnFont}" />
+                    <Button x:Name="btnFont" Grid.Row="4" Grid.Column="1" Content="{Binding EditorFont}" ContentTemplate="{StaticResource fontPickerButton}" HorizontalContentAlignment="Stretch" VerticalAlignment="Center" Margin="4,4,0,4" Command="{Binding PickFontCommand}" />
 
                 </Grid>
             </GroupBox>

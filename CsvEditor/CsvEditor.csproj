@@ -97,10 +97,10 @@
     <Compile Include="Commons\FileAssociation.cs" />
     <Compile Include="Interfaces\IGridSource.cs" />
     <Compile Include="Interfaces\IModelCommands.cs" />
-    <Compile Include="Interfaces\IUiModel.cs" />
     <Compile Include="Models\ConfigModel.cs" />
-    <Compile Include="Models\DelimiterItem.cs" />
-    <Compile Include="Models\FontPickerItem.cs" />
+    <Compile Include="Models\DelimiterModel.cs" />
+    <Compile Include="Models\EncodingModel.cs" />
+    <Compile Include="Models\FontModel.cs" />
     <Compile Include="RecentFiles\IRecentFilesStore.cs" />
     <Compile Include="SharpConfig\Configuration.cs" />
     <Compile Include="SharpConfig\ConfigurationElement.cs" />
@@ -118,7 +118,6 @@
     <Compile Include="SharpConfig\StockStringConverters.cs" />
     <Compile Include="ViewModels\MainViewModel.FindAndReplace.cs" />
     <Compile Include="ViewModels\MainViewModel.GridStorage.cs" />
-    <Compile Include="ViewModels\MainViewModel.UI.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
@@ -437,5 +436,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

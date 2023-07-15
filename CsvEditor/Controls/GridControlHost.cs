@@ -39,6 +39,11 @@ namespace CsvEditor.Controls
         {
             System.Windows.Forms.Application.EnableVisualStyles();
             DefaultStyleKeyProperty.OverrideMetadata(typeof(GridControlHost), new System.Windows.FrameworkPropertyMetadata(typeof(GridControlHost)));
+
+            FontFamilyProperty.OverrideMetadata(typeof(GridControlHost), new FrameworkPropertyMetadata(OnFontFamilyChanged));
+            FontSizeProperty.OverrideMetadata(typeof(GridControlHost), new FrameworkPropertyMetadata(OnFontSizeChanged));
+            FontWeightProperty.OverrideMetadata(typeof(GridControlHost), new FrameworkPropertyMetadata(OnFontWeightChanged));
+            FontStyleProperty.OverrideMetadata(typeof(GridControlHost), new FrameworkPropertyMetadata(OnFontStyleChanged));
         }
 
         public GridControlHost()
@@ -409,6 +414,73 @@ namespace CsvEditor.Controls
             }
             base.OnGotFocus(e);
         }
+
+        #region Font Properties Changed
+        private static void OnFontFamilyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is GridControlHost c)
+                c.OnFontChanged(e);
+        }
+
+        private static void OnFontSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is GridControlHost c)
+                c.OnFontChanged(e);
+        }
+
+        private static void OnFontWeightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is GridControlHost c)
+                c.OnFontChanged(e);
+        }
+
+        private static void OnFontStyleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is GridControlHost c)
+                c.OnFontChanged(e);
+        }
+
+        private void OnFontChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue is System.Windows.Media.FontFamily fontFamily)
+            {
+                var oldFont = gridControl.Font;
+                try
+                {
+                    var font = new System.Drawing.Font(fontFamily.Source, oldFont.Size, oldFont.Style);
+                    if (oldFont.Name != font.Name || oldFont.Size != font.Size || oldFont.Style != font.Style)
+                        gridControl.Font = font;
+                }
+                catch(Exception)
+                { }
+            }
+            else
+            {
+                var oldFont = gridControl.Font;
+                System.Drawing.FontStyle fontStyle = System.Drawing.FontStyle.Regular;
+
+                if (FontStyles.Italic.Equals(FontStyle))
+                    fontStyle &= System.Drawing.FontStyle.Italic;
+
+                if (FontWeights.Bold.ToOpenTypeWeight() < FontWeight.ToOpenTypeWeight())
+                    fontStyle &= System.Drawing.FontStyle.Bold;
+
+                var fontFamilyName = oldFont.Name;
+                
+                if (FontFamily != null && !string.IsNullOrEmpty(FontFamily.Source))
+                    fontFamilyName = FontFamily.Source;
+
+                try
+                {
+                    var font = new System.Drawing.Font(fontFamilyName, oldFont.Size, oldFont.Style);
+                    if (oldFont.Name != font.Name || oldFont.Size != font.Size || oldFont.Style != font.Style)
+                        gridControl.Font = font;
+                }
+                catch (Exception)
+                { }
+            }
+        }
+        #endregion
 
         public bool? ShowPrintPreview(System.Windows.Window owner = null)
         {

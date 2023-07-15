@@ -7,22 +7,32 @@ using System.Windows.Media;
 
 namespace CsvEditor.Models
 {
-    public class FontPickerItem
+    public class FontModel
     {
         #region Variables
-        private static FontPickerItem _default = null;
+        private static FontModel _default = null;
         private string familyName = null;
         private double size = 0;
         #endregion
 
         #region Constructor
-        public FontPickerItem(FontFamily family, double size)
+        public FontModel(FontFamily family, double size)
         {
             Family = family;
             this.size = size;
         }
 
-        public FontPickerItem(System.Drawing.Font font)
+        public FontModel(string family, double size)
+        {
+            if (!string.IsNullOrEmpty(family))
+                Family = new FontFamily(family);
+            else
+                Family = Default.Family;
+
+            this.size = size;
+        }
+
+        public FontModel(System.Drawing.Font font)
         {
             Family = new FontFamily(font.FontFamily.Name);
             size = font.Size;
@@ -30,7 +40,7 @@ namespace CsvEditor.Models
         #endregion
 
         #region Properties
-        public static FontPickerItem Deafult
+        public static FontModel Default
         {
             get
             {
@@ -39,7 +49,7 @@ namespace CsvEditor.Models
                     var fontFamily = TextBlock.FontFamilyProperty.DefaultMetadata.DefaultValue as FontFamily;
                     var fontSize = (double)TextBlock.FontSizeProperty.DefaultMetadata.DefaultValue;
 
-                    _default = new FontPickerItem(fontFamily, fontSize);
+                    _default = new FontModel(fontFamily, fontSize);
                 }
                 return _default;
             }
@@ -50,6 +60,11 @@ namespace CsvEditor.Models
         public double Size 
         {
             get => Math.Round(size, 1);
+        }
+
+        public string Name
+        {
+            get => Family.Source;
         }
 
         public string FamilyName
@@ -156,6 +171,11 @@ namespace CsvEditor.Models
         private static bool IsPrefixOf(string prefix, string tag) => prefix.Length < tag.Length &&
                    tag[prefix.Length] == '-' &&
                    string.CompareOrdinal(prefix, 0, tag, 0, prefix.Length) == 0;
+
+        public override string ToString()
+        {
+            return FamilyName;
+        }
         #endregion
     }
 }

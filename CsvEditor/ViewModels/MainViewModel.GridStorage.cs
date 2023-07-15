@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Windows.Media;
 using CsvEditor.Commands;
+using CsvEditor.Controls;
+using CsvEditor.Models;
 using Microsoft.SqlServer.Management.UI.Grid;
 
 namespace CsvEditor.ViewModels
@@ -205,6 +208,20 @@ namespace CsvEditor.ViewModels
                 {
                     grid.UpdateGrid();
                 }
+            }
+        }
+
+        public void UpdateGridFont()
+        {
+            if (grid != null && grid is GridControlHost host && !string.IsNullOrEmpty(config.EditorFontFamily))
+            {
+                try
+                {
+                    var font = new FontModel(config.EditorFontFamily, config.EditorFontSize);
+                    host.Grid.Font = font.Font;
+                }
+                catch (Exception)
+                { }
             }
         }
 

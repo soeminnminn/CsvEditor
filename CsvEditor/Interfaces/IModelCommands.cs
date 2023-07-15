@@ -8,6 +8,10 @@ namespace CsvEditor.Interfaces
 {
     public interface IModelCommands
     {
+        bool ShowToolbar { get; set; }
+
+        bool ShowStatusbar { get; set; }
+
         IRecentFilesMenu RecentFilesMenu { get; }
 
         void InitializeCommands(Window window, MenuItem miRecentFiles);
