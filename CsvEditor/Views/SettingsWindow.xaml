@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CsvEditor.Views"
+        xmlns:local="clr-namespace:CsvEditor.Controls"
         xmlns:viewmodels="clr-namespace:CsvEditor.ViewModels"
         xmlns:model="clr-namespace:CsvEditor.Models"
         mc:Ignorable="d"
@@ -56,6 +56,7 @@
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
 
                     <Label Content="Default _Delimiter" VerticalAlignment="Center" Target="{Binding ElementName=cboDelimiter}" />
@@ -69,9 +70,11 @@
                     <Label Grid.Row="3" Content="_Use Default Encoding on Save" VerticalAlignment="Center" Target="{Binding ElementName=chkUseEncoding}" />
                     <CheckBox x:Name="chkUseEncoding" Grid.Row="3" Grid.Column="1" IsChecked="{Binding UseDefaultEncoding, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4,4,0,4" />
 
-                    <Label Grid.Row="4" Content="Editor _Font" VerticalAlignment="Center" Target="{Binding ElementName=btnFont}" />
-                    <Button x:Name="btnFont" Grid.Row="4" Grid.Column="1" Content="{Binding EditorFont}" ContentTemplate="{StaticResource fontPickerButton}" HorizontalContentAlignment="Stretch" VerticalAlignment="Center" Margin="4,4,0,4" Command="{Binding PickFontCommand}" />
+                    <Label Grid.Row="4" Content="Editor _Font" VerticalAlignment="Center" Target="{Binding ElementName=cboFont}" />
+                    <local:FontFamilyPicker x:Name="cboFont" SelectedItem="{Binding EditorFontFamily, Mode=TwoWay}" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Margin="4,4,0,4" />
 
+                    <Label Grid.Row="5" Content="Editor Font Si_ze" VerticalAlignment="Center" Target="{Binding ElementName=cboFontSize}" />
+                    <ComboBox x:Name="cboFontSize" SelectedItem="{Binding EditorFontSize, Mode=TwoWay}" ItemsSource="{Binding FontSizes}" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Margin="4,4,0,4"/>
                 </Grid>
             </GroupBox>
         </Grid>

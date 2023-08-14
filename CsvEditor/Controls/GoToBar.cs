@@ -8,6 +8,7 @@ using System.Windows.Media;
 namespace CsvEditor.Controls
 {
     [TemplatePart(Name = PART_Popup, Type = typeof(Popup))]
+    [TemplatePart(Name = PART_Gripper, Type = typeof(Thumb))]
     [TemplatePart(Name = PART_InputGrid, Type = typeof(Grid))]
     [TemplatePart(Name = PART_XInput, Type = typeof(NumericTextBox))]
     [TemplatePart(Name = PART_YInput, Type = typeof(NumericTextBox))]
@@ -15,16 +16,25 @@ namespace CsvEditor.Controls
     {
         #region Variables
         private const string PART_Popup = "PART_Popup";
+        private const string PART_RootContainer = "PART_RootContainer";
+        private const string PART_Gripper = "PART_Gripper";
         private const string PART_InputGrid = "PART_InputGrid";
         private const string PART_XInput = "PART_XInput";
         private const string PART_YInput = "PART_YInput";
 
+        public static readonly RoutedCommand GoToXyCommand = new RoutedCommand("GoToXyCommand", typeof(GoToBar));
         private readonly RoutedCommand goCommand;
 
         private Popup popup = null;
+        private FrameworkElement rootContainer = null;
+        private Thumb gripper = null;
         private Grid inputGrid = null;
         private NumericTextBox textBoxX = null;
         private NumericTextBox textBoxY = null;
+
+        private double windowWidth = 0.0;
+        private double popupWidth = 0.0;
+        private double originalWidth = 0.0;
         #endregion
 
         #region Events
@@ -118,6 +128,11 @@ namespace CsvEditor.Controls
         static GoToBar()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(GoToBar), new FrameworkPropertyMetadata(typeof(GoToBar)));
+
+            CommandManager.RegisterClassInputBinding(typeof(GoToBar), new InputBinding(GoToXyCommand,
+                new KeyGesture(Key.X, ModifierKeys.Alt)));
+            CommandManager.RegisterClassCommandBinding(typeof(GoToBar), new CommandBinding(GoToXyCommand,
+                new ExecutedRoutedEventHandler(OnExecuteGoToXy)));
         }
 
         public GoToBar()
@@ -251,17 +266,20 @@ namespace CsvEditor.Controls
             base.OnApplyTemplate();
 
             popup = GetTemplateChild(PART_Popup) as Popup;
+            rootContainer = GetTemplateChild(PART_RootContainer) as FrameworkElement;
             inputGrid = GetTemplateChild(PART_InputGrid) as Grid;
             textBoxY = GetTemplateChild(PART_YInput) as NumericTextBox;
             textBoxX = GetTemplateChild(PART_XInput) as NumericTextBox;
 
             if (popup != null)
             {
-                popup.VerticalOffset = -2;
+                popup.Placement = PlacementMode.Custom;
+                popup.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(Popup_PlacementCallback);
                 popup.Opened += Popup_Opened;
                 popup.Closed += Popup_Closed;
             }
 
+            HookupGripperEvents();
             EnableXyMode(IsXy);
         }
 
@@ -277,22 +295,13 @@ namespace CsvEditor.Controls
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (popup != null && popup.IsOpen)
-            {
-                var offset = popup.HorizontalOffset;
-                popup.HorizontalOffset = offset + 1;
-                popup.HorizontalOffset = offset;
-            }
+            windowWidth = e.NewSize.Width;
+            RepositionPopup();
         }
 
         private void Window_LocationChanged(object sender, EventArgs e)
         {
-            if (popup != null && popup.IsOpen)
-            {
-                var offset = popup.HorizontalOffset;
-                popup.HorizontalOffset = offset + 1;
-                popup.HorizontalOffset = offset;
-            }
+            RepositionPopup();
         }
 
         private void Window_Deactivated(object sender, EventArgs e)
@@ -312,6 +321,29 @@ namespace CsvEditor.Controls
             }
         }
 
+        private CustomPopupPlacement[] Popup_PlacementCallback(Size popupSize, Size targetSize, Point offset)
+        {
+            if (popupWidth == 0.0)
+            {
+                popupWidth = popupSize.Width;
+            }
+
+            var offsetX = popupWidth - popupSize.Width;
+
+            CustomPopupPlacement placement = new CustomPopupPlacement(new Point(offsetX, -25), PopupPrimaryAxis.None);
+            return new CustomPopupPlacement[] { placement };
+        }
+
+        private void RepositionPopup()
+        {
+            if (popup != null && popup.IsOpen)
+            {
+                var offset = popup.HorizontalOffset;
+                popup.HorizontalOffset = offset + 1;
+                popup.HorizontalOffset = offset;
+            }
+        }
+
         private void Popup_Opened(object sender, EventArgs e)
         {
             if (textBoxX != null)
@@ -324,6 +356,82 @@ namespace CsvEditor.Controls
         private void Popup_Closed(object sender, EventArgs e)
         {
             RaiseIsOpenChangedEvent();
+        }
+
+        #region Gripper Methods
+        private void HookupGripperEvents()
+        {
+            UnhookGripperEvents();
+
+            gripper = GetTemplateChild(PART_Gripper) as Thumb;
+
+            if (gripper != null)
+            {
+                gripper.DragStarted += new DragStartedEventHandler(OnGripperDragStarted);
+                gripper.DragDelta += new DragDeltaEventHandler(OnGripperDragDelta);
+                gripper.DragCompleted += new DragCompletedEventHandler(OnGripperDragCompleted);
+            }
+        }
+
+        private void UnhookGripperEvents()
+        {
+            if (gripper != null)
+            {
+                gripper.DragStarted -= new DragStartedEventHandler(OnGripperDragStarted);
+                gripper.DragDelta -= new DragDeltaEventHandler(OnGripperDragDelta);
+                gripper.DragCompleted -= new DragCompletedEventHandler(OnGripperDragCompleted);
+                gripper = null;
+            }
+        }
+
+        private void OnGripperDragStarted(object sender, DragStartedEventArgs e)
+        {
+            if (rootContainer != null)
+            {
+                originalWidth = rootContainer.ActualWidth;
+                e.Handled = true;
+            }
+        }
+
+        private void OnGripperDragDelta(object sender, DragDeltaEventArgs e)
+        {
+            if (rootContainer != null)
+            {
+                double width = rootContainer.ActualWidth - e.HorizontalChange;
+                width = Math.Max(width, MinWidth);
+                var maxWidth = Math.Min(windowWidth - 300, 400);
+                width = Math.Min(width, maxWidth);
+
+                UpdateWidth(width);
+                e.Handled = true;
+            }
+        }
+
+        private void OnGripperDragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            if (e.Canceled)
+            {
+                UpdateWidth(originalWidth);
+            }
+            e.Handled = true;
+        }
+
+        private void UpdateWidth(double width)
+        {
+            if (popup != null && rootContainer != null && width > 0)
+            {
+                rootContainer.Width = width;
+            }
+        }
+        #endregion
+
+        #region Event Methods
+        private static void OnExecuteGoToXy(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (sender is GoToBar c)
+            {
+                c.IsXy = !c.IsXy;
+            }
         }
 
         private void Close_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -383,6 +491,7 @@ namespace CsvEditor.Controls
 
             return args.Handled;
         }
+        #endregion
 
         public void Show()
         {

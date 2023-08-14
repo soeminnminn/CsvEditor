@@ -46,7 +46,7 @@
     </Style>
 
     <Style x:Key="XyButton" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ToolButton}">
-        <Setter Property="ToolTip" Value="Goto X,Y" />
+        <Setter Property="ToolTip" Value="Goto X,Y (Alt+X)" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
@@ -122,16 +122,34 @@
         </Setter>
     </Style>
 
+    <Style x:Key="LeftGripper" TargetType="{x:Type Thumb}">
+        <Setter Property="Width" Value="8"/>
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"/>
+        <Setter Property="Cursor" Value="SizeWE" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Thumb}">
+                    <Border Padding="{TemplateBinding Padding}">
+                        <Rectangle Fill="{TemplateBinding Background}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Width="3"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="{x:Type local:GoToBar}">
-        <Setter Property="MinWidth" Value="300" />
+        <Setter Property="MinWidth" Value="200" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:GoToBar}">
                     <Button Height="0" Width="{TemplateBinding Width}" VerticalAlignment="{TemplateBinding VerticalAlignment}">
-                        <Popup AllowsTransparency="True" x:Name="PART_Popup" Placement="Bottom" 
+                        <Popup AllowsTransparency="True" x:Name="PART_Popup" Placement="Custom" 
                                IsOpen="{Binding IsOpen, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GoToBar}}}">
                             <local:ThemeShadowChrome x:Name="Shdw" Depth="20">
-                                <Border Width="200" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="3,1,1,1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+                                <Border x:Name="PART_RootContainer" MinWidth="{TemplateBinding MinWidth}" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,1,1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition />
@@ -161,11 +179,13 @@
                                             </Grid>
                                         </Border>
 
-                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,2,0">
                                             <ToggleButton Style="{StaticResource XyButton}" IsChecked="{Binding IsXy, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GoToBar}}}"/>
                                             <Button Style="{StaticResource AcceptButton}" Command="{Binding GoCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GoToBar}}}" />
                                             <Button Style="{StaticResource SystemButtonClose}" Command="ApplicationCommands.Stop" />
                                         </StackPanel>
+
+                                        <Thumb x:Name="PART_Gripper" Style="{StaticResource LeftGripper}" />
                                     </Grid>
                                 </Border>
                             </local:ThemeShadowChrome>

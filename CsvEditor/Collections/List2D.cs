@@ -378,9 +378,11 @@ namespace S16.Collections
                 int len = m_size.Length;
                 int width = m_size.Width;
                 int idx = index * width;
+                int srcIdx = idx + (count * width);
+                int remain = len - srcIdx;
 
-                if (index < size)
-                    Array.Copy(m_items, idx + (count * width), m_items, idx, len - idx);
+                if (index < size && remain > 0)
+                    Array.Copy(m_items, srcIdx, m_items, idx, remain);
 
                 m_size -= count;
                 m_version++;

@@ -122,7 +122,7 @@
     </Style>
 
     <Style x:Key="SelectionButton" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ToolButton}">
-        <Setter Property="ToolTip" Value="Find in Selection" />
+        <Setter Property="ToolTip" Value="Find in Selection (Alt+L)" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
@@ -195,7 +195,7 @@
     </Style>
 
     <Style x:Key="CaseButton" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ToolButton}">
-        <Setter Property="ToolTip" Value="Match Case" />
+        <Setter Property="ToolTip" Value="Match Case (Alt+C)" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
@@ -222,7 +222,7 @@
     </Style>
 
     <Style x:Key="WholeWordButton" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ToolButton}">
-        <Setter Property="ToolTip" Value="Match Whole Word" />
+        <Setter Property="ToolTip" Value="Match Whole Word (Alt+W)" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
@@ -249,7 +249,7 @@
     </Style>
 
     <Style x:Key="RegexButton" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ToolButton}">
-        <Setter Property="ToolTip" Value="Use Regular Expression" />
+        <Setter Property="ToolTip" Value="Use Regular Expression (Alt+R)" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
@@ -276,7 +276,7 @@
     </Style>
 
     <Style x:Key="PreserveCaseButton" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ToolButton}">
-        <Setter Property="ToolTip" Value="Preserve Case" />
+        <Setter Property="ToolTip" Value="Preserve Case (Alt+P)" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
@@ -310,16 +310,34 @@
         <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
     </Style>
 
+    <Style x:Key="LeftGripper" TargetType="{x:Type Thumb}">
+        <Setter Property="Width" Value="8"/>
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"/>
+        <Setter Property="Cursor" Value="SizeWE" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Thumb}">
+                    <Border Padding="{TemplateBinding Padding}">
+                        <Rectangle Fill="{TemplateBinding Background}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Width="3"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="{x:Type local:FindAndReplaceBar}">
         <Setter Property="MinWidth" Value="350" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:FindAndReplaceBar}">
                     <Button Height="0" Width="{TemplateBinding Width}" VerticalAlignment="{TemplateBinding VerticalAlignment}">
-                        <Popup AllowsTransparency="True" x:Name="PART_Popup" Placement="Bottom" 
+                        <Popup AllowsTransparency="True" x:Name="PART_Popup" Placement="Custom"
                                IsOpen="{Binding IsOpen, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}">
                             <local:ThemeShadowChrome x:Name="Shdw" Depth="20">
-                                <Border Width="350" VerticalAlignment="Top" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="3,1,1,1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+                                <Border x:Name="PART_RootContainer" MinWidth="{TemplateBinding MinWidth}" VerticalAlignment="Top" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,1,1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="30"/>
@@ -332,8 +350,8 @@
                                             <RowDefinition />
                                             <RowDefinition x:Name="PART_ReplaceBarRow" />
                                         </Grid.RowDefinitions>
-
-                                        <ToggleButton Grid.RowSpan="2" Style="{StaticResource ExpandButton}"
+                                        
+                                        <ToggleButton Grid.RowSpan="2" Style="{StaticResource ExpandButton}" Margin="4,2,0,2"
                                                       IsChecked="{Binding IsReplace, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}"/>
 
                                         <Border Grid.Column="1" Style="{StaticResource InputBorder}">
@@ -358,7 +376,7 @@
                                         <TextBlock Grid.Column="2" VerticalAlignment="Center" Padding="0,0,4,0"
                                                    Text="{Binding FindCountText, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}"/>
 
-                                        <StackPanel Grid.Column="3" Orientation="Horizontal">
+                                        <StackPanel Grid.Column="3" Orientation="Horizontal" Margin="0,0,2,0">
                                             <Button Style="{StaticResource UpButton}" 
                                                     Command="{Binding FindPreviousCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}"/>
                                             <Button Style="{StaticResource DownButton}" 
@@ -386,10 +404,12 @@
 
                                         <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal">
                                             <Button Style="{StaticResource ReplaceButton}" 
-                                                    Command="{Binding ReplaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}"/>
+                                                    Command="{Binding FindReplaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}"/>
                                             <Button Style="{StaticResource ReplaceAllButton}" 
-                                                    Command="{Binding ReplaceAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}"/>
+                                                    Command="{Binding FindReplaceAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FindAndReplaceBar}}}"/>
                                         </StackPanel>
+
+                                        <Thumb x:Name="PART_Gripper" Grid.RowSpan="2" Style="{StaticResource LeftGripper}" />
                                     </Grid>
                                 </Border>
                             </local:ThemeShadowChrome>

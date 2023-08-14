@@ -26,15 +26,15 @@ namespace CsvEditor.Views
 
         public static readonly DependencyProperty IsFirstButtonProperty = DependencyProperty.Register(
             nameof(IsFirstButton), typeof(bool), typeof(AboutDialog),
-            new FrameworkPropertyMetadata(true, OnIsFirstButtonChanged));
+            new FrameworkPropertyMetadata(true, OnIsButtonChanged));
 
         public static readonly DependencyProperty IsSecondButtonProperty = DependencyProperty.Register(
             nameof(IsSecondButton), typeof(bool), typeof(AboutDialog),
-            new FrameworkPropertyMetadata(false, OnIsSecondButtonChanged));
+            new FrameworkPropertyMetadata(false, OnIsButtonChanged));
 
         public static readonly DependencyProperty IsThirdButtonProperty = DependencyProperty.Register(
             nameof(IsThirdButton), typeof(bool), typeof(AboutDialog),
-            new FrameworkPropertyMetadata(false, OnIsThirdButtonChanged));
+            new FrameworkPropertyMetadata(false, OnIsButtonChanged));
 
         public static readonly DependencyProperty VersionProperty = DependencyProperty.Register(
             nameof(Version), typeof(string), typeof(AboutDialog),
@@ -63,46 +63,33 @@ namespace CsvEditor.Views
             get => (bool)GetValue(IsFirstButtonProperty);
             set { SetValue(IsFirstButtonProperty, value); }
         }
-
-        private static void OnIsFirstButtonChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
-        {
-            if (o is AboutDialog sender && (bool)e.NewValue == true)
-            {
-                sender.IsSecondButton = false;
-                sender.IsThirdButton = false;
-                sender.TabSelected = 0;
-            }
-        }
-
         public bool IsSecondButton
         {
             get => (bool)GetValue(IsSecondButtonProperty);
             set { SetValue(IsSecondButtonProperty, value); }
         }
-
-        private static void OnIsSecondButtonChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
-        {
-            if (o is AboutDialog sender && (bool)e.NewValue == true)
-            {
-                sender.IsFirstButton = false;
-                sender.IsThirdButton = false;
-                sender.TabSelected = 1;
-            }
-        }
-
         public bool IsThirdButton
         {
             get => (bool)GetValue(IsThirdButtonProperty);
             set { SetValue(IsThirdButtonProperty, value); }
         }
 
-        private static void OnIsThirdButtonChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
+        private static void OnIsButtonChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
-            if (o is AboutDialog sender && (bool)e.NewValue == true)
+            if (o is AboutDialog sender)
             {
-                sender.IsFirstButton = false;
-                sender.IsSecondButton = false;
-                sender.TabSelected = !string.IsNullOrEmpty(sender.License) ? 2 : 1;
+                if (sender.IsSecondButton)
+                {
+                    sender.TabSelected = 1;
+                }
+                else if (sender.IsThirdButton)
+                {
+                    sender.TabSelected = 2;
+                }
+                else
+                {
+                    sender.TabSelected = 0;
+                }
             }
         }
 

@@ -91,6 +91,7 @@
     <Compile Include="Controls\Chrome\PopupPositioner.cs" />
     <Compile Include="Controls\Chrome\ThemeShadowChrome.cs" />
     <Compile Include="Controls\FindAndReplaceBar.cs" />
+    <Compile Include="Controls\FontFamilyPicker.cs" />
     <Compile Include="Controls\GoToBar.cs" />
     <Compile Include="Controls\NumericTextBox.cs" />
     <Compile Include="Csv\TextFieldParser.cs" />

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Windows.Input;
-using CsvEditor.Commands;
+using System.Windows.Media;
 using CsvEditor.Models;
 using CsvEditor.Observable;
 
@@ -13,6 +11,18 @@ namespace CsvEditor.ViewModels
     public class SettingsViewModel : ObservableObject, IDisposable
     {
         #region Variables
+        private static readonly double[] CommonlyUsedFontSizes =
+        {
+            3.0, 4.0, 5.0, 6.0, 6.5,
+            7.0, 7.5, 8.0, 8.5, 9.0,
+            9.5, 10.0, 10.5, 11.0, 11.5,
+            12.0, 12.5, 13.0, 13.5, 14.0,
+            15.0, 16.0, 17.0, 18.0, 19.0,
+            20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0,
+            40.0, 44.0, 48.0, 52.0, 56.0, 60.0, 64.0, 68.0, 72.0, 76.0,
+            80.0, 88.0, 96.0, 104.0, 112.0, 120.0, 128.0, 136.0, 144.0
+        };
+
         private readonly ConfigModel config;
 
         private DelimiterModel delimiter = DelimiterModel.Default;
@@ -22,8 +32,8 @@ namespace CsvEditor.ViewModels
         private bool useDefaultEncoding = false;
 
         private FontModel font = FontModel.Default;
-
-        private readonly ICommand pickFontCommand;
+        private object fontFamily = null;
+        private object fontSize = null;
         #endregion
 
         #region Constructor
@@ -39,9 +49,12 @@ namespace CsvEditor.ViewModels
             delimiter = Delimiters.FirstOrDefault(x => x.Equals(config.DefaultDelimiter));
 
             if (!string.IsNullOrEmpty(config.EditorFontFamily))
+            {
                 font = new FontModel(config.EditorFontFamily, config.EditorFontSize);
+            }
 
-            pickFontCommand = new Command(PickFont_Executed);
+            fontFamily = font.Family;
+            fontSize = font.Size;
         }
         #endregion
 
@@ -95,36 +108,25 @@ namespace CsvEditor.ViewModels
             set { SetProperty(ref useDefaultEncoding, value); }
         }
 
-        public FontModel EditorFont
+        public double[] FontSizes
         {
-            get => font;
-            private set { SetProperty(ref font, value); }
+            get => CommonlyUsedFontSizes;
         }
 
-        public ICommand PickFontCommand
+        public object EditorFontFamily
         {
-            get => pickFontCommand;
+            get => fontFamily;
+            set { SetProperty(ref fontFamily, value); }
+        }
+
+        public object EditorFontSize
+        {
+            get => fontSize;
+            set { SetProperty(ref fontSize, value); }
         }
         #endregion
 
         #region Methods
-        private void PickFont_Executed()
-        {
-            var dialog = new System.Windows.Forms.FontDialog()
-            {
-                Font = EditorFont.Font,
-            };
-            
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                var chooseFont = dialog.Font;
-                if (chooseFont != null)
-                {
-                    EditorFont = new FontModel(chooseFont);
-                }
-            }
-        }
-
         public void Save()
         {
             config.DefaultDelimiter = delimiter.Delimiter;
@@ -133,8 +135,11 @@ namespace CsvEditor.ViewModels
             config.UseEncodingWithBom = useEncodingWithBom;
             config.UseDefaultEncoding = useDefaultEncoding;
             
-            config.EditorFontFamily = font.Name;
-            config.EditorFontSize = font.Size;
+            if (fontFamily is FontFamily family)
+                config.EditorFontFamily = family.Source;
+
+            if (fontSize is double size)
+                config.EditorFontSize = size;
         }
 
         public void Dispose()
