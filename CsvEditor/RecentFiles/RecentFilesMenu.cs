@@ -41,7 +41,7 @@ namespace CsvEditor.RecentFiles
             }
 
             _maxFiles = maxFiles;
-            this._clearListText = string.IsNullOrWhiteSpace(clearListText) ? null : clearListText;
+            _clearListText = string.IsNullOrWhiteSpace(clearListText) ? SR.ClearListMenuItem : clearListText;
 
             _persistence = new RecentFilesPersistence(persistenceDirectoryPath);
             _openRecentFileCommand = new OpenRecentFile(new Action<object>(OpenRecentFile_Executed));
@@ -60,7 +60,7 @@ namespace CsvEditor.RecentFiles
             }
 
             _maxFiles = maxFiles;
-            this._clearListText = string.IsNullOrWhiteSpace(clearListText) ? null : clearListText;
+            _clearListText = string.IsNullOrWhiteSpace(clearListText) ? SR.ClearListMenuItem : clearListText;
 
             _persistence = persistence;
             _openRecentFileCommand = new OpenRecentFile(new Action<object>(OpenRecentFile_Executed));
@@ -111,7 +111,7 @@ namespace CsvEditor.RecentFiles
             }
 
             _miRecentFiles = miRecentFiles;
-            _miRecentFiles.Loaded += miRecentFiles_Loaded;
+            _miRecentFiles.Loaded += RecentFiles_Loaded;
         }
 
         public void AddRecentFile(string fileName)
@@ -145,14 +145,8 @@ namespace CsvEditor.RecentFiles
         #endregion
 
         #region Private Methods
-        [SuppressMessage("Style", "IDE1006:Benennungsstile", Justification = "<Ausstehend>")]
-        private async void miRecentFiles_Loaded(object sender, RoutedEventArgs e)
+        private async void RecentFiles_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_miRecentFiles is null)
-            {
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Res.NotInitialized, nameof(Initialize)));
-            }
-
             _miRecentFiles.Items.Clear();
             var recentFiles = await _persistence.GetRecentFiles();
 
@@ -187,18 +181,18 @@ namespace CsvEditor.RecentFiles
                                 VerticalContentAlignment = VerticalAlignment.Stretch,
                             };
 
-                            _ = _miRecentFiles.Items.Add(mi);
+                            _miRecentFiles.Items.Add(mi);
                         }
                     }
 
                     var menuItemClearList = new MenuItem
                     {
-                        Header = _clearListText ?? Res.ClearList,
+                        Header = _clearListText,
                         Command = _clearRecentFilesCommand
                     };
 
-                    _ = _miRecentFiles.Items.Add(new Separator());
-                    _ = _miRecentFiles.Items.Add(menuItemClearList);
+                    _miRecentFiles.Items.Add(new Separator());
+                    _miRecentFiles.Items.Add(menuItemClearList);
                 }
                 catch
                 {

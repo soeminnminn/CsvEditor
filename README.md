@@ -3,6 +3,18 @@ CSV Editor
 
 ![CsvEditor Screenshot][1]
 
+## Change Log
+
+#### Version 2.0.0
+- Bug fix.
+- Add Localization.
+- Add File Associations.
+- Add Startup open option.
+- Add Export Plugin Support (WIP).
+
+#### Version 1.0.0
+- Intial release.
+
 License
 -------
 

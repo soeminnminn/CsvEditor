@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:CsvEditor.Controls" >
+                    xmlns:local="clr-namespace:CsvEditor"
+                    xmlns:ctrl="clr-namespace:CsvEditor.Controls" >
 
     <SolidColorBrush x:Key="SelectedBorder" Color="#26A0DA" />
     <SolidColorBrush x:Key="SelectedBackground" Color="#C1DBFC" />
@@ -12,7 +13,7 @@
         <Setter Property="Width" Value="20" />
         <Setter Property="Height" Value="20" />
         <Setter Property="Margin" Value="4,0,4,0" />
-        <Setter Property="ToolTip" Value="Close (Esc)" />
+        <Setter Property="ToolTip" Value="{x:Static local:SR.BarCloseTooltip}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -46,7 +47,7 @@
     </Style>
 
     <Style x:Key="XyButton" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ToolButton}">
-        <Setter Property="ToolTip" Value="Goto X,Y (Alt+X)" />
+        <Setter Property="ToolTip" Value="{x:Static local:SR.XyButtonTooltip}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
@@ -73,7 +74,7 @@
     </Style>
 
     <Style x:Key="AcceptButton" TargetType="{x:Type Button}" BasedOn="{StaticResource ToolButton}">
-        <Setter Property="ToolTip" Value="Accept (Enter)" />
+        <Setter Property="ToolTip" Value="{x:Static local:SR.AcceptButtonTooltip}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -103,7 +104,7 @@
         <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
     </Style>
 
-    <Style x:Key="NumericTextBoxStyle" TargetType="{x:Type local:NumericTextBox}">
+    <Style x:Key="NumericTextBoxStyle" TargetType="{x:Type ctrl:NumericTextBox}">
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="HorizontalContentAlignment" Value="Right" />
         <Setter Property="Padding" Value="0,0,4,0" />
@@ -113,7 +114,7 @@
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:NumericTextBox}">
+                <ControlTemplate TargetType="{x:Type ctrl:NumericTextBox}">
                     <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                         <ScrollViewer Margin="0" x:Name="PART_ContentHost" />
                     </Border>
@@ -140,15 +141,15 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type local:GoToBar}">
+    <Style TargetType="{x:Type ctrl:GoToBar}">
         <Setter Property="MinWidth" Value="200" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:GoToBar}">
+                <ControlTemplate TargetType="{x:Type ctrl:GoToBar}">
                     <Button Height="0" Width="{TemplateBinding Width}" VerticalAlignment="{TemplateBinding VerticalAlignment}">
                         <Popup AllowsTransparency="True" x:Name="PART_Popup" Placement="Custom" 
-                               IsOpen="{Binding IsOpen, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GoToBar}}}">
-                            <local:ThemeShadowChrome x:Name="Shdw" Depth="20">
+                               IsOpen="{Binding IsOpen, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ctrl:GoToBar}}}">
+                            <ctrl:ThemeShadowChrome x:Name="Shdw" Depth="20">
                                 <Border x:Name="PART_RootContainer" MinWidth="{TemplateBinding MinWidth}" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,1,1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -166,29 +167,29 @@
                                                 </Grid.ColumnDefinitions>
 
                                                 <TextBlock Text="X:" VerticalAlignment="Center" Margin="2,0,2,0"/>
-                                                <local:NumericTextBox x:Name="PART_XInput" Grid.Column="1"
-                                                                    Maximum="{Binding XMaximum, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GoToBar}}}" 
-                                                                    Value="{Binding XValue, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GoToBar}}}"
+                                                <ctrl:NumericTextBox x:Name="PART_XInput" Grid.Column="1"
+                                                                    Maximum="{Binding XMaximum, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ctrl:GoToBar}}}" 
+                                                                    Value="{Binding XValue, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ctrl:GoToBar}}}"
                                                                     Style="{StaticResource NumericTextBoxStyle}" BorderThickness="0,0,1,0" />
 
                                                 <TextBlock Text="Y:" Grid.Column="2" VerticalAlignment="Center" Margin="2,0,2,0"/>
-                                                <local:NumericTextBox x:Name="PART_YInput" Grid.Column="3" 
-                                                                    Maximum="{Binding YMaximum, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GoToBar}}}" 
-                                                                    Value="{Binding YValue, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GoToBar}}}"
+                                                <ctrl:NumericTextBox x:Name="PART_YInput" Grid.Column="3" 
+                                                                    Maximum="{Binding YMaximum, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ctrl:GoToBar}}}" 
+                                                                    Value="{Binding YValue, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ctrl:GoToBar}}}"
                                                                     Style="{StaticResource NumericTextBoxStyle}" />
                                             </Grid>
                                         </Border>
 
                                         <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,2,0">
-                                            <ToggleButton Style="{StaticResource XyButton}" IsChecked="{Binding IsXy, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GoToBar}}}"/>
-                                            <Button Style="{StaticResource AcceptButton}" Command="{Binding GoCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GoToBar}}}" />
+                                            <ToggleButton Style="{StaticResource XyButton}" IsChecked="{Binding IsXy, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ctrl:GoToBar}}}"/>
+                                            <Button Style="{StaticResource AcceptButton}" Command="{Binding GoCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ctrl:GoToBar}}}" />
                                             <Button Style="{StaticResource SystemButtonClose}" Command="ApplicationCommands.Stop" />
                                         </StackPanel>
 
                                         <Thumb x:Name="PART_Gripper" Style="{StaticResource LeftGripper}" />
                                     </Grid>
                                 </Border>
-                            </local:ThemeShadowChrome>
+                            </ctrl:ThemeShadowChrome>
                         </Popup>
                     </Button>
                     <ControlTemplate.Triggers>

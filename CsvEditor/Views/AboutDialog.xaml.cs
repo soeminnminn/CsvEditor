@@ -12,11 +12,11 @@ namespace CsvEditor.Views
     public partial class AboutDialog : Window
     {
         #region Variables
-        private const string ABOUT_TEXT = "About";
-        private const string CREDITS_TEXT = "Credits";
-        private const string LICENSE_TEXT = "License";
+        private static string ABOUT_TEXT = SR.About;
+        private static string CREDITS_TEXT = SR.Credits;
+        private static string LICENSE_TEXT = SR.License;
 
-        private const string LICENSE = "Licensed under the Apache License, Version 2.0 (the \"License\");\r\nyou may not use this file except in compliance with the License.\r\nYou may obtain a copy of the License at\r\n\r\nhttp://www.apache.org/licenses/LICENSE-2.0\r\n\r\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.";
+        private static string LICENSE = SR.LicenseText;
         #endregion
 
         #region Properties
@@ -168,7 +168,7 @@ namespace CsvEditor.Views
             var companyAttr = assm.GetCustomAttribute(typeof(AssemblyCompanyAttribute)) as AssemblyCompanyAttribute;
             if (companyAttr != null)
             {
-                copyright.Add("Develop by " + companyAttr.Company);
+                copyright.Add(SR.DevelopBy + " " + companyAttr.Company);
             }
 
             var copyRightAttr = assm.GetCustomAttribute(typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute;

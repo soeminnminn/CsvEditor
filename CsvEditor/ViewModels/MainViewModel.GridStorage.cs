@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Windows.Media;
 using CsvEditor.Commands;
 using CsvEditor.Controls;
 using CsvEditor.Models;
@@ -285,17 +284,22 @@ namespace CsvEditor.ViewModels
             grid.SelectCells(cells);
         }
 
-        public System.Windows.Forms.TextBox SelectCell(int row, int col, bool edit = true)
+        public void SelectCell(int row, int col, bool edit, int selectStart = -1, int selectLength = 0)
         {
-            if (row < 0 || row >= items.Height) return null;
-            if (col < 0 || col >= columnsCount) return null;
+            if (row < 0 || row >= items.Height) return;
+            if (col < 0 || col >= columnsCount) return;
 
             int rowIdx = hasHeader ? row - 1 : row;
             int colIdx = col + 1;
 
             if (edit && grid.StartCellEdit(rowIdx, colIdx) && grid.EditingEmbeddedControl != null)
             {
-                return grid.EditingEmbeddedControl as System.Windows.Forms.TextBox;
+                var textBox = grid.EditingEmbeddedControl as System.Windows.Forms.TextBox;
+                if (textBox != null && selectStart > -1 && selectLength > 0)
+                {
+                    textBox.SelectionStart = selectStart;
+                    textBox.SelectionLength = selectLength;
+                }
             }
             else
             {
@@ -304,7 +308,6 @@ namespace CsvEditor.ViewModels
                 cells.Height = 1;
                 grid.SelectCells(cells);
             }
-            return null;
         }
 
         public void SelectAll()

@@ -105,6 +105,7 @@ namespace CsvEditor.Views
 
             Model.InitializeCommands(this, menuRecentFiles);
             Model.InitializeGrid(gridCtrl);
+            Model.InitializePlugins(menuExport);
 
             gridColumnHeaderMenu.ContextMenu.DataContext = Model;
             gridRowHeaderMenu.ContextMenu.DataContext = Model;
@@ -221,24 +222,24 @@ namespace CsvEditor.Views
         #region Models Events Methods
         private void Model_FileLoaded(object sender, EventArgs e)
         {
-            Title = $"{Properties.Resources.Title} - {Model.CurrentFileName}";
-            statusLabelSelect.Text = "Row: 0, Cell: 0";
+            Title = $"{SR.MainWindowTitle} - {Model.CurrentFileName}";
+            statusLabelSelect.Text = SR.GetString(SR.Keys.CurrentLocation, 0, 0);
         }
 
         private void Model_FileClosed(object sender, EventArgs e)
         {
-            Title = Properties.Resources.Title;
+            Title = SR.MainWindowTitle;
         }
 
         private void Model_FileEdited(object sender, bool e)
         {
-            string title = $"{Properties.Resources.Title} - {Model.CurrentFileName}";
+            string title = $"{SR.MainWindowTitle} - {Model.CurrentFileName}";
             Title = e ? title + "*" : title;
         }
 
         private void Model_SelectionChanged(object sender, ModelSelectionChangedEventArgs args)
         {
-            statusLabelSelect.Text = $"Row: {args.RowIndex + 1}, Cell: {args.ColumnIndex + 1}";
+            statusLabelSelect.Text = SR.GetString(SR.Keys.CurrentLocation, args.RowIndex + 1, args.ColumnIndex + 1);
         }
         #endregion
 

@@ -6,6 +6,7 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text;
+using System.Reflection;
 using CsvEditor.Commons;
 using CsvEditor.RecentFiles;
 using SharpConfig;
@@ -34,8 +35,11 @@ namespace CsvEditor.Models
         private bool useEncodingWithBom = false;
         private bool useDefaultEncoding = false;
 
-        private string editorFontFamily = "";
+        private string editorFontFamily = string.Empty;
         private double editorFontSize = 0;
+
+        private StartUpModes startUpOpen = StartUpModes.Blank;
+        private string lastOpenedFile = string.Empty;
 
         private readonly List<FileConfig> fileConfigs = new List<FileConfig>();
         private readonly List<string> recentFiles = new List<string>();
@@ -67,14 +71,24 @@ namespace CsvEditor.Models
             {
                 if (!string.IsNullOrEmpty(appDataConfigDir)) return appDataConfigDir;
 
-                var assm = System.Reflection.Assembly.GetEntryAssembly();
+                var assm = Assembly.GetEntryAssembly();
                 if (assm != null)
                 {
-                    var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(assm.Location);
-                    var appName = versionInfo.ProductName ?? assm.GetName()?.Name ?? "";
-                    var companyName = versionInfo.CompanyName ?? "";
+                    string appName = assm.GetName().Name;
+                    var titleAttr = assm.GetCustomAttribute(typeof(AssemblyTitleAttribute)) as AssemblyTitleAttribute;
+                    if (titleAttr != null && !string.IsNullOrEmpty(titleAttr.Title))
+                    {
+                        appName = titleAttr.Title;
+                    }
 
-                    var configDir = Path.Combine(appDataPath, companyName, appName);
+                    string companyName = string.Empty;
+                    var companyAttr = assm.GetCustomAttribute(typeof(AssemblyCompanyAttribute)) as AssemblyCompanyAttribute;
+                    if (companyAttr != null && !string.IsNullOrEmpty(companyAttr.Company))
+                    {
+                        companyName = companyAttr.Company;
+                    }
+
+                    string configDir = Path.Combine(appDataPath, companyName, appName);
                     if (!Directory.Exists(configDir))
                     {
                         try
@@ -145,6 +159,18 @@ namespace CsvEditor.Models
         {
             get => editorFontSize;
             set { editorFontSize = value; }
+        }
+
+        public StartUpModes StartUpOpen
+        {
+            get => startUpOpen;
+            set { startUpOpen = value; }
+        }
+
+        public string LastOpenedFile
+        {
+            get => lastOpenedFile;
+            set { lastOpenedFile = value; }
         }
 
         public List<FileConfig> FileConfigs
@@ -315,6 +341,9 @@ namespace CsvEditor.Models
             {
                 var generalSection = config["General"];
 
+                if (generalSection["StartUpOpen"].TryGetValue(out string startUp) && !string.IsNullOrEmpty(startUp) && Enum.TryParse(startUp, out StartUpModes mode))
+                    startUpOpen = mode;
+
                 if (generalSection["DefaultDelimiter"].TryGetValue(out string delimiter) && !string.IsNullOrEmpty(delimiter))
                     defaultDelimiter = delimiter.Replace("\\t", "\t");
 
@@ -326,6 +355,9 @@ namespace CsvEditor.Models
 
                 if (generalSection["UseDefaultEncoding"].TryGetValue(out bool useEncoding))
                     useDefaultEncoding = useEncoding;
+
+                if (generalSection["LastOpenedFile"].TryGetValue(out string lastFile) && !string.IsNullOrEmpty(lastFile))
+                    lastOpenedFile = lastFile;
 
                 var uiSection = config["UI"];
 
@@ -377,10 +409,12 @@ namespace CsvEditor.Models
             {
                 var generalSection = config.Add("General");
 
+                generalSection.Add("StartUpOpen", startUpOpen);
                 generalSection.Add("DefaultDelimiter", defaultDelimiter.Replace("\t", "\\t"));
                 generalSection.Add("DefaultEncoding", defaultEncoding);
                 generalSection.Add("UseEncodingWithBom", useEncodingWithBom);
                 generalSection.Add("UseDefaultEncoding", useDefaultEncoding);
+                generalSection.Add("LastOpenedFile", lastOpenedFile);
 
                 var uiSection = config.Add("UI");
 
@@ -389,7 +423,7 @@ namespace CsvEditor.Models
                 uiSection.Add("EditorFontFamily", editorFontFamily);
                 uiSection.Add("EditorFontSize", editorFontSize);
 
-                var filesSection = config.Add("Files");
+                var filesSection = config.Add("Files");                
 
                 for (int i = 0; i < fileConfigs.Count; i++)
                 {

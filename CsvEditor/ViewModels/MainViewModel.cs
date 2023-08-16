@@ -19,7 +19,8 @@ namespace CsvEditor.ViewModels
     public partial class MainViewModel : ObservableObject, IDisposable
     {
         #region Variables
-        public static readonly string[] EXTENSIONS = new string[] { ".csv", ".tsv" };
+        private const int DEFAULT_COLUMNS_COUNT = 2;
+        public static List<string> extensions = new List<string>() { ".csv", ".tsv" };
 
         private readonly FileWatcher watcher;
         private readonly BackgroundWorker loadWorker;
@@ -274,7 +275,7 @@ namespace CsvEditor.ViewModels
                 MarkEdited(false);
             }
 
-            StateMessage = "Ready";
+            StateMessage = SR.MessageReady;
 
             if (this is IGridSource gs)
                 gs.UpdateGrid();
@@ -294,7 +295,7 @@ namespace CsvEditor.ViewModels
                 if (result.Detected != null)
                 {
                     var ext = Path.GetExtension(fileName);
-                    if (ext != null) return Array.Exists(EXTENSIONS, x => x == ext.ToLowerInvariant());
+                    if (ext != null) return extensions.Exists(x => x == ext.ToLowerInvariant());
                 }
             }
             catch { }
@@ -317,11 +318,32 @@ namespace CsvEditor.ViewModels
 
             Delimiter = config.DefaultDelimiter;
             Encoding = config.DefaultEncoding;
+
+            syncContext.Post(OnConfigLoaded, config);
+        }
+
+        private void OnConfigLoaded(object state)
+        {
+            if (!loadWorker.IsBusy && string.IsNullOrEmpty(CurrentFile))
+            {
+                if (config.StartUpOpen == StartUpModes.NewFile)
+                {
+                    NewFile(DEFAULT_COLUMNS_COUNT);
+                }
+                else if (config.StartUpOpen == StartUpModes.LastFile)
+                {
+                    string lastFile = config.LastOpenedFile;
+                    if (!string.IsNullOrEmpty(lastFile))
+                    {
+                        LoadFile(lastFile);
+                    }
+                }
+            }
         }
 
         public void TryLoadCommandLine(string[] args)
         {
-            if (args != null && args.Length > 1)
+            if (args != null && args.Length > 0)
             {
                 var filePath = args.Where(f => IsSupportedFile(f)).ToArray().FirstOrDefault();
                 if (!string.IsNullOrEmpty(filePath))
@@ -335,9 +357,10 @@ namespace CsvEditor.ViewModels
         {
             if (string.IsNullOrEmpty(fileName)) return;
 
-            StateMessage = "Loading";
+            StateMessage = SR.MessageLoading;
 
             watcher.Stop();
+
             loadWorker.RunWorkerAsync(fileName);
         }
 
@@ -345,7 +368,7 @@ namespace CsvEditor.ViewModels
         {
             if (string.IsNullOrEmpty(currentFile) || isEdited) return;
 
-            StateMessage = "Loading";
+            StateMessage = SR.MessageLoading;
             watcher.Pause();
 
             if (File.Exists(currentFile))
@@ -372,7 +395,7 @@ namespace CsvEditor.ViewModels
             if (this is IGridSource gs)
                 gs.ClearGrid();
 
-            StateMessage = "Ready";
+            StateMessage = SR.MessageReady;
             FileClosed?.Invoke(this, EventArgs.Empty);
         }
 
@@ -419,7 +442,7 @@ namespace CsvEditor.ViewModels
                 withBom = config.UseEncodingWithBom;
             }            
 
-            StateMessage = "Saving";
+            StateMessage = SR.MessageSaving;
 
             var task = Task.Run(() =>
             {
@@ -450,7 +473,7 @@ namespace CsvEditor.ViewModels
 
                     CurrentFile = filePath;
                     Delimiter = delimiter;
-                    StateMessage = "Ready";
+                    StateMessage = SR.MessageReady;
                     MarkEdited(false);
 
                     watcher.Watch(filePath);
@@ -474,6 +497,7 @@ namespace CsvEditor.ViewModels
             {
                 if (disposing)
                 {
+                    config.LastOpenedFile = CurrentFile;
                     config.Dispose();
 
                     watcher.Dispose();

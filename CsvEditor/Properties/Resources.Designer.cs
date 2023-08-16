@@ -61,102 +61,12 @@ namespace CsvEditor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon csv_file {
-            get {
-                object obj = ResourceManager.GetObject("csv_file", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap icon {
             get {
                 object obj = ResourceManager.GetObject("icon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
-        ///you may not use this file except in compliance with the License.
-        ///You may obtain a copy of the License at
-        ///
-        ///http://www.apache.org/licenses/LICENSE-2.0
-        ///
-        ///Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string License {
-            get {
-                return ResourceManager.GetString("License", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Loading.
-        /// </summary>
-        internal static string MessageLoadingString {
-            get {
-                return ResourceManager.GetString("MessageLoadingString", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Do you want to save changes?.
-        /// </summary>
-        internal static string MessageNeedSaveString {
-            get {
-                return ResourceManager.GetString("MessageNeedSaveString", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ready.
-        /// </summary>
-        internal static string MessageReadyString {
-            get {
-                return ResourceManager.GetString("MessageReadyString", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Data has been save successfull..
-        /// </summary>
-        internal static string MessageSaveString {
-            get {
-                return ResourceManager.GetString("MessageSaveString", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon ms_csv_icon {
-            get {
-                object obj = ResourceManager.GetObject("ms_csv_icon", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to CSV Editor.
-        /// </summary>
-        internal static string Title {
-            get {
-                return ResourceManager.GetString("Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon tsv_file {
-            get {
-                object obj = ResourceManager.GetObject("tsv_file", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
             }
         }
     }

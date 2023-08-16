@@ -82,7 +82,7 @@ namespace CsvEditor.Models
             {
                 try
                 {
-                    return new System.Drawing.Font(FamilyName, (float)Size);
+                    return new System.Drawing.Font(FamilyName, (float)PixelsToPoints(Size));
                 }
                 catch(Exception)
                 { }
@@ -93,6 +93,10 @@ namespace CsvEditor.Models
         #endregion
 
         #region Methods
+        public static double PointsToPixels(double value) => value * (96.0 / 72.0);
+
+        public static double PixelsToPoints(double value) => value * (72.0 / 96.0);
+
         private static string GetDisplayName(LanguageSpecificStringDictionary nameDictionary)
         {
             // Look up the display name based on the UI culture, which is the same culture

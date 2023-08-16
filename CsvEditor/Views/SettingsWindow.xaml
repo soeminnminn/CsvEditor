@@ -3,15 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CsvEditor.Controls"
+        xmlns:local="clr-namespace:CsvEditor"
+        xmlns:ctrl="clr-namespace:CsvEditor.Controls"
         xmlns:viewmodels="clr-namespace:CsvEditor.ViewModels"
         xmlns:model="clr-namespace:CsvEditor.Models"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}"
         ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
-        Title="Settings" Height="350" Width="450" >
+        Title="{x:Static local:SR.SettingsWindowTitle}" >
     
     <DockPanel>
         <DockPanel.Resources>
@@ -39,12 +41,12 @@
 
         <Border DockPanel.Dock="Bottom" BorderBrush="LightGray" BorderThickness="0,1,0,0" Margin="8,2">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,4">
-                <Button Content="Ok" IsDefault="True" Style="{StaticResource DialogButton}" Click="ButtonOk_Click" />
-                <Button Content="Cancel" IsCancel="True" Style="{StaticResource DialogButton}" />
+                <Button Content="{x:Static local:SR.OK}" IsDefault="True" Style="{StaticResource DialogButton}" Click="ButtonOk_Click" />
+                <Button Content="{x:Static local:SR.Cancel}" IsCancel="True" Style="{StaticResource DialogButton}" />
             </StackPanel>
         </Border>
         <Grid>
-            <GroupBox Header="General" Margin="8">
+            <Border Margin="8" CornerRadius="4" BorderThickness="0.5" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
                 <Grid Margin="16" VerticalAlignment="Top">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -57,26 +59,44 @@
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <Label Content="Default _Delimiter" VerticalAlignment="Center" Target="{Binding ElementName=cboDelimiter}" />
-                    <ComboBox x:Name="cboDelimiter" Grid.Column="1" ItemsSource="{Binding Delimiters}" SelectedItem="{Binding Delimiter, Mode=TwoWay}" VerticalAlignment="Center" Margin="4,4,0,4"/>
+                    <Label Grid.Row="0" Content="{x:Static local:SR.OnStartUpOpen}" VerticalAlignment="Center" Target="{Binding ElementName=cboStartUpOpen}" />
+                    <ComboBox x:Name="cboStartUpOpen" Grid.Row="0" Grid.Column="1" ItemsSource="{Binding StartUpModes}" SelectedItem="{Binding StartUpOpen, Mode=TwoWay}" VerticalAlignment="Center" Margin="4,4,0,4"/>
 
-                    <Label Grid.Row="1" Content="Default _Encoding" VerticalAlignment="Center" Target="{Binding ElementName=cboEncoding}" />
-                    <ComboBox x:Name="cboEncoding" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Encodings}" SelectedItem="{Binding Encoding, Mode=TwoWay}" VerticalAlignment="Center" Margin="4,4,0,4" />
+                    <Label Grid.Row="1" Content="{x:Static local:SR.DefaultDelimiter}" VerticalAlignment="Center" Target="{Binding ElementName=cboDelimiter}" />
+                    <ComboBox x:Name="cboDelimiter" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Delimiters}" SelectedItem="{Binding Delimiter, Mode=TwoWay}" VerticalAlignment="Center" Margin="4,4,0,4"/>
 
-                    <CheckBox Grid.Row="2" Grid.Column="1" Content="With _BOM" IsChecked="{Binding UseEncodingWithBom, Mode=TwoWay}" IsEnabled="{Binding EncodingHasBom}" VerticalAlignment="Center" Margin="4,4,0,4" />
+                    <Label Grid.Row="2" Content="{x:Static local:SR.DefaultEncoding}" VerticalAlignment="Center" Target="{Binding ElementName=cboEncoding}" />
+                    <ComboBox x:Name="cboEncoding" Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Encodings}" SelectedItem="{Binding Encoding, Mode=TwoWay}" VerticalAlignment="Center" Margin="4,4,0,4" />
 
-                    <Label Grid.Row="3" Content="_Use Default Encoding on Save" VerticalAlignment="Center" Target="{Binding ElementName=chkUseEncoding}" />
-                    <CheckBox x:Name="chkUseEncoding" Grid.Row="3" Grid.Column="1" IsChecked="{Binding UseDefaultEncoding, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4,4,0,4" />
+                    <CheckBox Grid.Row="3" Grid.Column="1" Content="{x:Static local:SR.WithBOM}" IsChecked="{Binding UseEncodingWithBom, Mode=TwoWay}" IsEnabled="{Binding EncodingHasBom}" VerticalAlignment="Center" Margin="4,4,0,4" />
 
-                    <Label Grid.Row="4" Content="Editor _Font" VerticalAlignment="Center" Target="{Binding ElementName=cboFont}" />
-                    <local:FontFamilyPicker x:Name="cboFont" SelectedItem="{Binding EditorFontFamily, Mode=TwoWay}" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Margin="4,4,0,4" />
+                    <Label Grid.Row="4" Content="{x:Static local:SR.UseDefaultEncoding}" VerticalAlignment="Center" Target="{Binding ElementName=chkUseEncoding}" />
+                    <CheckBox x:Name="chkUseEncoding" Grid.Row="4" Grid.Column="1" IsChecked="{Binding UseDefaultEncoding, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4,4,0,4" />
 
-                    <Label Grid.Row="5" Content="Editor Font Si_ze" VerticalAlignment="Center" Target="{Binding ElementName=cboFontSize}" />
-                    <ComboBox x:Name="cboFontSize" SelectedItem="{Binding EditorFontSize, Mode=TwoWay}" ItemsSource="{Binding FontSizes}" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Margin="4,4,0,4"/>
+                    <Label Grid.Row="5" Content="{x:Static local:SR.EditorFont}" VerticalAlignment="Center" Target="{Binding ElementName=cboFont}" />
+                    <ctrl:FontFamilyPicker x:Name="cboFont" Grid.Row="5" Grid.Column="1" SelectedItem="{Binding EditorFontFamily, Mode=TwoWay}" VerticalAlignment="Center" Margin="4,4,0,4" />
+
+                    <Label Grid.Row="6" Content="{x:Static local:SR.EditorFontSize}" VerticalAlignment="Center" Target="{Binding ElementName=cboFontSize}" />
+                    <ComboBox x:Name="cboFontSize" Grid.Row="6" Grid.Column="1" SelectedItem="{Binding EditorFontSize, Mode=TwoWay}" ItemsSource="{Binding FontSizes}" VerticalAlignment="Center" Margin="4,4,0,4"/>
+
+                    <GroupBox Grid.Row="7" Grid.ColumnSpan="2" Header="{x:Static local:SR.FileAssociations}" Margin="0,8,0,0">
+                        <Grid Margin="4,12,4,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Content="{x:Static local:SR.AssociateCSVFile}" Margin="4" Padding="8,4,8,4" IsEnabled="{Binding IsCsvNotAssociated}" Command="{Binding AssociateCsv}"/>
+                            <Button Grid.Column="1" Content="{x:Static local:SR.AssociateTSVFile}" Margin="4" Padding="8,4,8,4" IsEnabled="{Binding IsTsvNotAssociated}" Command="{Binding AssociateTsv}"/>
+                            <Button Grid.Column="2" Content="{x:Static local:SR.RemoveAllAssociations}" Margin="4" Padding="8,4,8,4" IsEnabled="{Binding HasAnyAssociations}" Command="{Binding RemoveAssociations}" />
+                        </Grid>
+                    </GroupBox>
                 </Grid>
-            </GroupBox>
+            </Border>
         </Grid>
     </DockPanel>
 </Window>

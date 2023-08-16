@@ -1,0 +1,120 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    
+    <!-- Title -->
+    <sys:String x:Key="AppName">CSV Editor</sys:String>
+    <sys:String x:Key="MainWindowTitle">CSV Editor</sys:String>
+    <sys:String x:Key="SettingsWindowTitle">Settings</sys:String>
+    <sys:String x:Key="AboutWindowTitle">About - CSV Editor</sys:String>
+    
+    <!-- Label -->
+    <sys:String x:Key="OK">_Ok</sys:String>
+    <sys:String x:Key="Cancel">_Cancel</sys:String>
+    <sys:String x:Key="General">_General</sys:String>
+    <sys:String x:Key="DefaultDelimiter">Default _Delimiter</sys:String>
+    <sys:String x:Key="DefaultEncoding">Default _Encoding</sys:String>
+    <sys:String x:Key="WithBOM">With _BOM</sys:String>
+    <sys:String x:Key="UseDefaultEncoding">_Use Default Encoding on Save</sys:String>
+    <sys:String x:Key="EditorFont">Editor _Font</sys:String>
+    <sys:String x:Key="EditorFontSize">Editor Font Si_ze</sys:String>
+    <sys:String x:Key="FileAssociations">_File Associations</sys:String>
+    <sys:String x:Key="AssociateCSVFile">Associate CSV File (.csv)</sys:String>
+    <sys:String x:Key="AssociateTSVFile">Associate TSV File (.tsv)</sys:String>
+    <sys:String x:Key="RemoveAllAssociations">_Remove All</sys:String>
+
+    <sys:String x:Key="OnStartUpOpen">On _Startup Open</sys:String>
+    <sys:String x:Key="StartUpBlank">Blank</sys:String>
+    <sys:String x:Key="OpenLastFile">Last Opened File</sys:String>
+    <sys:String x:Key="CreateNewFile">New File</sys:String>
+
+    <!-- Menu -->
+    <sys:String x:Key="FileMenuItem">_File</sys:String>
+    <sys:String x:Key="NewMenuItem">_New</sys:String>
+    <sys:String x:Key="OpenMenuItem">_Open…</sys:String>
+    <sys:String x:Key="RecentFilesMenuItem">Recent _Files</sys:String>
+    <sys:String x:Key="ClearListMenuItem">_Clear List</sys:String>
+    <sys:String x:Key="SaveMenuItem">_Save</sys:String>
+    <sys:String x:Key="SaveAsMenuItem">Save _As…</sys:String>
+    <sys:String x:Key="ExportMenuItem">_Export</sys:String>
+    <sys:String x:Key="PrintMenuItem">_Print…</sys:String>
+    <sys:String x:Key="PrintPreviewMenuItem">Print Pre_view…</sys:String>
+    <sys:String x:Key="ExitMenuItem">E_xit</sys:String>
+
+    <sys:String x:Key="EditMenuItem">_Edit</sys:String>
+    <sys:String x:Key="UndoMenuItem">_Undo</sys:String>
+    <sys:String x:Key="RedoMenuItem">_Redo</sys:String>
+    <sys:String x:Key="CutMenuItem">Cu_t</sys:String>
+    <sys:String x:Key="CopyMenuItem">_Copy</sys:String>
+    <sys:String x:Key="PasteMenuItem">_Paste</sys:String>
+    <sys:String x:Key="DeleteMenuItem">_Delete</sys:String>
+    <sys:String x:Key="FindMenuItem">_Find…</sys:String>
+    <sys:String x:Key="ReplaceMenuItem">_Replace…</sys:String>
+    <sys:String x:Key="GoToMenuItem">_Go to…</sys:String>
+    <sys:String x:Key="SelectAllMenuItem">Select _All</sys:String>
+
+    <sys:String x:Key="ViewMenuItem">_View</sys:String>
+    <sys:String x:Key="HasHeaderMenuItem">_Has Header</sys:String>
+    <sys:String x:Key="ToolbarMenuItem">_Toolbar</sys:String>
+    <sys:String x:Key="StatusbarMenuItem">St_atusbar</sys:String>
+    <sys:String x:Key="SettingsMenuItem">_Settings…</sys:String>
+    
+    <sys:String x:Key="HelpMenuItem">_Help</sys:String>
+    <sys:String x:Key="AboutMenuItem">_About</sys:String>
+    
+    <!-- Tooltip -->
+    <sys:String x:Key="NewFileTooltip">New File</sys:String>
+    <sys:String x:Key="OpenFileTooltip">Open File</sys:String>
+    <sys:String x:Key="SaveFileTooltip">Save File</sys:String>
+    <sys:String x:Key="PrintTooltip">Print</sys:String>
+    <sys:String x:Key="CutTooltip">Cut</sys:String>
+    <sys:String x:Key="CopyTooltip">Copy</sys:String>
+    <sys:String x:Key="PasteTooltip">Paste</sys:String>
+    <sys:String x:Key="HasHeaderTooltip">First row is header</sys:String>
+    <sys:String x:Key="AboutTooltip">About</sys:String>
+    <sys:String x:Key="CloseTooltip">Close</sys:String>
+    
+    <sys:String x:Key="DelimiterTooltip">Delimiter</sys:String>
+    <sys:String x:Key="EncodingTooltip">Encoding</sys:String>
+
+    <sys:String x:Key="BarCloseTooltip">Close (Esc)</sys:String>
+    <sys:String x:Key="UpButtonTooltip">Previous Match (Shift+Enter)</sys:String>
+    <sys:String x:Key="DownButtonTooltip">Next Match (Enter)</sys:String>
+    <sys:String x:Key="SelectionButtonTooltip">Find in Selection (Alt+L)</sys:String>
+    <sys:String x:Key="ReplaceButtonTooltip">Replace (Ctrl+Enter)</sys:String>
+    <sys:String x:Key="ReplaceAllButtonTooltip">Replace All (Ctrl+Alt+Enter)</sys:String>
+    <sys:String x:Key="CaseButtonTooltip">Match Case (Alt+C)</sys:String>
+    <sys:String x:Key="WholeWordButtonTooltip">Match Whole Word (Alt+W)</sys:String>
+    <sys:String x:Key="RegexButtonTooltip">Use Regular Expression (Alt+R)</sys:String>
+    <sys:String x:Key="PreserveCaseButtonTooltip">Preserve Case (Alt+P)</sys:String>
+
+    <sys:String x:Key="XyButtonTooltip">Goto X,Y (Alt+X)</sys:String>
+    <sys:String x:Key="AcceptButtonTooltip">Accept (Enter)</sys:String>
+
+    <!-- Message -->
+    <sys:String x:Key="MessageLoading">Loading</sys:String>
+    <sys:String x:Key="MessageSaving">Saving</sys:String>
+    <sys:String x:Key="MessageReady">Ready</sys:String>
+    <sys:String x:Key="NoResults">No results</sys:String>
+    <sys:String x:Key="CurrentLocation">Row: {0}, Cell: {1}</sys:String>
+
+    <sys:String x:Key="MessageNeedSave">Do you want to save changes?</sys:String>
+    <sys:String x:Key="MessageSave">Data has been save successfull.</sys:String>
+
+    <!-- About -->
+    <sys:String x:Key="About">About</sys:String>
+    <sys:String x:Key="Credits">Credits</sys:String>
+    <sys:String x:Key="License">License</sys:String>
+    <sys:String x:Key="DevelopBy">Develop by</sys:String>
+    
+    <sys:String x:Key="LicenseText" xml:space="preserve">Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.</sys:String>
+
+    <sys:String x:Key="AboutText" xml:space="preserve">Develop by Soe Minn Minn&#13;Copyright © 2023 The Open Source Project</sys:String>
+
+</ResourceDictionary>

@@ -39,6 +39,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -48,12 +49,15 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Win32Resource>D:\Projects\Notes\CsvEditor\CsvEditor\app.res</Win32Resource>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -98,10 +102,16 @@
     <Compile Include="Commons\FileAssociation.cs" />
     <Compile Include="Interfaces\IGridSource.cs" />
     <Compile Include="Interfaces\IModelCommands.cs" />
+    <Compile Include="Localization\SR.cs" />
     <Compile Include="Models\ConfigModel.cs" />
     <Compile Include="Models\DelimiterModel.cs" />
     <Compile Include="Models\EncodingModel.cs" />
     <Compile Include="Models\FontModel.cs" />
+    <Compile Include="Models\StartUpMode.cs" />
+    <Compile Include="Plugin\AssmLoader.cs" />
+    <Compile Include="Plugin\IPlugin.cs" />
+    <Compile Include="Plugin\Manager.cs" />
+    <Compile Include="Plugin\PluginParameter.cs" />
     <Compile Include="RecentFiles\IRecentFilesStore.cs" />
     <Compile Include="SharpConfig\Configuration.cs" />
     <Compile Include="SharpConfig\ConfigurationElement.cs" />
@@ -119,6 +129,7 @@
     <Compile Include="SharpConfig\StockStringConverters.cs" />
     <Compile Include="ViewModels\MainViewModel.FindAndReplace.cs" />
     <Compile Include="ViewModels\MainViewModel.GridStorage.cs" />
+    <Compile Include="ViewModels\MainViewModel.Plugins.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
@@ -129,6 +140,10 @@
     <Compile Include="Wildcard\WildcardPatternMatcher.cs" />
     <Compile Include="Wildcard\WildcardPatternParser.cs" />
     <Compile Include="Wildcard\WildcardPatternToRegexParser.cs" />
+    <Page Include="Localization\Lang.en-US.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\ComingSoon.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -182,7 +197,6 @@
     <Compile Include="RecentFiles\RecentFileSelectedEventArgs.cs" />
     <Compile Include="RecentFiles\RecentFilesMenu.cs" />
     <Compile Include="RecentFiles\RecentFilesPersistence.cs" />
-    <Compile Include="RecentFiles\Res.cs" />
     <Compile Include="RecentFiles\Utility.cs" />
     <Compile Include="Ude\CharsetDetector.cs" />
     <Compile Include="Ude\Core\Analyzers\CharDistributionAnalyser.cs" />
@@ -393,6 +407,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.manifest" />
+    <None Include="build-res.bat" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -437,6 +452,13 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="app.rc" />
+    <None Include="app.res" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
 </Project>

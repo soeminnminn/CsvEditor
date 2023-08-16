@@ -37,8 +37,7 @@ namespace CsvEditor.Controls
         #region Constructors
         static GridControlHost()
         {
-            System.Windows.Forms.Application.EnableVisualStyles();
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(GridControlHost), new System.Windows.FrameworkPropertyMetadata(typeof(GridControlHost)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(GridControlHost), new FrameworkPropertyMetadata(typeof(GridControlHost)));
 
             FontFamilyProperty.OverrideMetadata(typeof(GridControlHost), new FrameworkPropertyMetadata(OnFontFamilyChanged));
             FontSizeProperty.OverrideMetadata(typeof(GridControlHost), new FrameworkPropertyMetadata(OnFontSizeChanged));

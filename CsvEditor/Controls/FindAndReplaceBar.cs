@@ -155,7 +155,7 @@ namespace CsvEditor.Controls
 
         private static readonly DependencyPropertyKey FindCountTextPropertyKey = DependencyProperty.RegisterReadOnly(
                 nameof(FindCountText), typeof(string), typeof(FindAndReplaceBar),
-                new FrameworkPropertyMetadata("No results"));
+                new FrameworkPropertyMetadata(SR.NoResults));
 
         public static readonly DependencyProperty FindCountTextProperty = FindCountTextPropertyKey.DependencyProperty;
         #endregion

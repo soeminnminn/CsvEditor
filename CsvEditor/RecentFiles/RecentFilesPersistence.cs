@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,7 +26,7 @@ namespace CsvEditor.RecentFiles
 
             if (!Utility.IsPathDirectory(persistenceDirectoryPath))
             {
-                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, Res.NotAnExistingDirectory, nameof(persistenceDirectoryPath)), nameof(persistenceDirectoryPath));
+                throw new ArgumentException(persistenceDirectoryPath);
             }
 
             _fileName = Path.Combine(persistenceDirectoryPath, $"{Environment.MachineName}.{Environment.UserName}.RF.txt");

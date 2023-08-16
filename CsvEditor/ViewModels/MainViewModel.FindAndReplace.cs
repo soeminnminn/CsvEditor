@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.ComponentModel;
 using S16.Collections;
 using CsvEditor.Wildcard;
 using CsvEditor.Controls;
@@ -92,7 +91,7 @@ namespace CsvEditor.ViewModels
             => Clone();
     }
 
-    public class FindAndReplace : IDisposable
+    public class FindAndReplace
     {
         #region Variables
         private static readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
@@ -174,7 +173,7 @@ namespace CsvEditor.ViewModels
             return null;
         }
 
-        private void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "HasHeader" && ctrl.CanFind(SearchDirection.All))
             {
@@ -185,6 +184,7 @@ namespace CsvEditor.ViewModels
         private void Ctrl_FindTextChanged(object sender, RoutedFindEventArgs e)
         {
             FindOptions options = GetFindOptions(e);
+            findIndex = -1;
             FindAll(e.SearchText, options);
         }
 
@@ -327,11 +327,13 @@ namespace CsvEditor.ViewModels
                 return;
             }
 
-            var textBox = model.SelectCell(current.Row, current.Column, selection);
-            if (textBox != null && current.Pointers != null && current.Pointers.Length > 0)
+            if (selection && current.Pointers != null && current.Pointers.Length > 0)
             {
-                textBox.SelectionStart = current.Pointers[0].Offset;
-                textBox.SelectionLength = current.Pointers[0].Length;
+                model.SelectCell(current.Row, current.Column, true, current.Pointers[0].Offset, current.Pointers[0].Length);
+            }
+            else
+            {
+                model.SelectCell(current.Row, current.Column, selection);
             }
             ctrl.FindIndex = findIndex + 1;
         }
@@ -354,11 +356,13 @@ namespace CsvEditor.ViewModels
                 current = results[findIndex];
             }
 
-            var textBox = model.SelectCell(current.Row, current.Column, selection);
-            if (textBox != null && current.Pointers != null && current.Pointers.Length > 0)
+            if (selection && current.Pointers != null && current.Pointers.Length > 0)
             {
-                textBox.SelectionStart = current.Pointers[0].Offset;
-                textBox.SelectionLength = current.Pointers[0].Length;
+                model.SelectCell(current.Row, current.Column, true, current.Pointers[0].Offset, current.Pointers[0].Length);
+            }
+            else
+            {
+                model.SelectCell(current.Row, current.Column, selection);
             }
             ctrl.FindIndex = findIndex + 1;
         }
@@ -411,11 +415,13 @@ namespace CsvEditor.ViewModels
                 model.UpdateGrid(false);
                 model.MarkEdited(true);
 
-                var textBox = model.SelectCell(current.Row, current.Column, selection);
-                if (textBox != null && current.Pointers != null && current.Pointers.Length > 0)
+                if (selection && current.Pointers != null && current.Pointers.Length > 0)
                 {
-                    textBox.SelectionStart = current.Pointers[subIndex].Offset;
-                    textBox.SelectionLength = current.Pointers[subIndex].Length;
+                    model.SelectCell(current.Row, current.Column, true, current.Pointers[0].Offset, current.Pointers[0].Length);
+                }
+                else
+                {
+                    model.SelectCell(current.Row, current.Column, selection);
                 }
 
                 ctrl.FindIndex = findIndex + 1;
@@ -461,9 +467,6 @@ namespace CsvEditor.ViewModels
                 FindAll(criteria, options);
             }
         }
-
-        public void Dispose()
-        { }
         #endregion
     }
 

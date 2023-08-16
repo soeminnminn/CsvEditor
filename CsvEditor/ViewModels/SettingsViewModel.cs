@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 using System.Windows.Media;
+using CsvEditor.Commands;
 using CsvEditor.Models;
 using CsvEditor.Observable;
 
@@ -25,6 +27,12 @@ namespace CsvEditor.ViewModels
 
         private readonly ConfigModel config;
 
+        private readonly StartUpMode[] startUpModes = new StartUpMode[] 
+        {
+            StartUpMode.Blank, StartUpMode.NewFile, StartUpMode.LastFile
+        };
+
+        private StartUpMode startUpOpen = StartUpMode.Blank;
         private DelimiterModel delimiter = DelimiterModel.Default;
 
         private EncodingModel encoding = null;
@@ -34,12 +42,21 @@ namespace CsvEditor.ViewModels
         private FontModel font = FontModel.Default;
         private object fontFamily = null;
         private object fontSize = null;
+
+        private bool isCsvNotAssociated = false;
+        private bool isTsvNotAssociated = false;
+
+        private ICommand associateCsv = null;
+        private ICommand associateTsv = null;
+        private ICommand removeAssociations = null;
         #endregion
 
         #region Constructor
         public SettingsViewModel(ConfigModel config)
         {
             this.config = config;
+
+            startUpOpen = config.StartUpOpen;
 
             var currentEncoding = config.DefaultEncoding;
             encoding = Encodings.FirstOrDefault(x => x.CodePage == currentEncoding.CodePage);
@@ -55,10 +72,28 @@ namespace CsvEditor.ViewModels
 
             fontFamily = font.Family;
             fontSize = font.Size;
+
+            isCsvNotAssociated = !FileAssociations.CsvAssociation.IsAssociated();
+            isTsvNotAssociated = !FileAssociations.TsvAssociation.IsAssociated();
+
+            associateCsv = new Command(AssociateCsv_Executed);
+            associateTsv = new Command(AssociateTsv_Executed);
+            removeAssociations = new Command(RemoveAssociations_Executed);
         }
         #endregion
 
         #region Properties
+        public StartUpMode[] StartUpModes
+        {
+            get => startUpModes;
+        }
+
+        public StartUpMode StartUpOpen
+        {
+            get => startUpOpen;
+            set { SetProperty(ref startUpOpen, value); }
+        }
+
         public DelimiterModel[] Delimiters
         {
             get => DelimiterModel.Delimiters;
@@ -124,11 +159,65 @@ namespace CsvEditor.ViewModels
             get => fontSize;
             set { SetProperty(ref fontSize, value); }
         }
+
+        public bool IsCsvNotAssociated
+        {
+            get => isCsvNotAssociated;
+            set { SetProperty(ref isCsvNotAssociated, value); }
+        }
+
+        public ICommand AssociateCsv
+        {
+            get => associateCsv;
+        }
+
+        public bool IsTsvNotAssociated
+        {
+            get => isTsvNotAssociated;
+            set { SetProperty(ref isTsvNotAssociated, value); }
+        }
+
+        public ICommand AssociateTsv
+        {
+            get => associateTsv;
+        }
+
+        public bool HasAnyAssociations
+        {
+            get => !isCsvNotAssociated || !isTsvNotAssociated;
+        }
+
+        public ICommand RemoveAssociations
+        {
+            get => removeAssociations;
+        }
         #endregion
 
         #region Methods
+        private void AssociateCsv_Executed()
+        {
+            IsCsvNotAssociated = !FileAssociations.CsvAssociation.EnsureSet();
+            PostPropertyChanged("HasAnyAssociations");
+        }
+
+        private void AssociateTsv_Executed()
+        {
+            IsTsvNotAssociated = !FileAssociations.TsvAssociation.EnsureSet();
+            PostPropertyChanged("HasAnyAssociations");
+        }
+
+        private void RemoveAssociations_Executed()
+        {
+            FileAssociations.RemoveAllAssociations();
+
+            IsCsvNotAssociated = !FileAssociations.CsvAssociation.IsAssociated();
+            IsTsvNotAssociated = !FileAssociations.TsvAssociation.IsAssociated();
+            PostPropertyChanged("HasAnyAssociations");
+        }
+
         public void Save()
         {
+            config.StartUpOpen = (StartUpModes)startUpOpen;
             config.DefaultDelimiter = delimiter.Delimiter;
 
             config.DefaultEncoding = encoding.Encoding;

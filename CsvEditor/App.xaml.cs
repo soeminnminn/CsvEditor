@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using CsvEditor.Views;
 
@@ -17,6 +12,9 @@ namespace CsvEditor
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            System.Windows.Forms.Application.EnableVisualStyles();
+            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 
             var mainModel = new ViewModels.MainViewModel();
             mainModel.TryLoadCommandLine(e.Args);

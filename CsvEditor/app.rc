@@ -1,0 +1,18 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+100 ICON    "icon.ico"
+101 ICON    "Resources\\csv_file.ico"
+102 ICON    "Resources\\tsv_file.ico"
+103 ICON    "Resources\\ms_csv_icon.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Manifest
+//
+100 24      "app.manifest"

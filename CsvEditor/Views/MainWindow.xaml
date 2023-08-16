@@ -3,12 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CsvEditor.Controls"
+        xmlns:local="clr-namespace:CsvEditor"
+        xmlns:ctrl="clr-namespace:CsvEditor.Controls"
         xmlns:cmd="clr-namespace:CsvEditor.Commands"
         xmlns:viewmodels="clr-namespace:CsvEditor.ViewModels"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
-        Title="CSV Editor"
+        Title="{x:Static local:SR.MainWindowTitle}"
         AllowDrop="True"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
@@ -30,109 +31,111 @@
 
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File">
-                <MenuItem Command="ApplicationCommands.New">
+            <MenuItem Header="{x:Static local:SR.FileMenuItem}">
+                <MenuItem Header="{x:Static local:SR.NewMenuItem}" Command="ApplicationCommands.New">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource NewFile_16x}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Open…" Command="ApplicationCommands.Open">
+                <MenuItem Header="{x:Static local:SR.OpenMenuItem}" Command="ApplicationCommands.Open">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource OpenFolder_16x}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Recent Files" x:Name="menuRecentFiles" />
+                <MenuItem Header="{x:Static local:SR.RecentFilesMenuItem}" x:Name="menuRecentFiles" />
                 <Separator />
-                <MenuItem Command="ApplicationCommands.Save">
+                <MenuItem Header="{x:Static local:SR.SaveMenuItem}" Command="ApplicationCommands.Save">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource Save_16x}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Save _As…" Command="ApplicationCommands.SaveAs">
+                <MenuItem Header="{x:Static local:SR.SaveAsMenuItem}" Command="ApplicationCommands.SaveAs">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource SaveAs_16x}"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Command="ApplicationCommands.Print">
+                <MenuItem Header="{x:Static local:SR.ExportMenuItem}" x:Name="menuExport"/>
+                <Separator Visibility="{Binding HasPlugins, Converter={StaticResource booleanToVisibilityConverter}}"/>
+                <MenuItem Header="{x:Static local:SR.PrintMenuItem}" Command="ApplicationCommands.Print">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource Print_16x}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Print Pre_view…" Command="ApplicationCommands.PrintPreview">
+                <MenuItem Header="{x:Static local:SR.PrintPreviewMenuItem}" Command="ApplicationCommands.PrintPreview">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource PrintPreview_16x}"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="E_xit" Command="ApplicationCommands.Close" />
+                <MenuItem Header="{x:Static local:SR.ExitMenuItem}" Command="ApplicationCommands.Close" />
             </MenuItem>
-            <MenuItem Header="_Edit">
-                <MenuItem Command="ApplicationCommands.Undo">
+            <MenuItem Header="{x:Static local:SR.EditMenuItem}">
+                <MenuItem Header="{x:Static local:SR.UndoMenuItem}" Command="ApplicationCommands.Undo">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource Undo_16x}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="ApplicationCommands.Redo">
+                <MenuItem Header="{x:Static local:SR.RedoMenuItem}" Command="ApplicationCommands.Redo">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource Redo_16x}"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Command="ApplicationCommands.Cut">
+                <MenuItem Header="{x:Static local:SR.CutMenuItem}" Command="ApplicationCommands.Cut">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource Cut_16x}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="ApplicationCommands.Copy">
+                <MenuItem Header="{x:Static local:SR.CopyMenuItem}"  Command="ApplicationCommands.Copy">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource Copy_16x}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="ApplicationCommands.Paste">
+                <MenuItem Header="{x:Static local:SR.PasteMenuItem}" Command="ApplicationCommands.Paste">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource Paste_16x}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="ApplicationCommands.Delete">
+                <MenuItem Header="{x:Static local:SR.DeleteMenuItem}" Command="ApplicationCommands.Delete">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource Cancel_16x}"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="_Find…" Command="ApplicationCommands.Find">
+                <MenuItem Header="{x:Static local:SR.FindMenuItem}" Command="ApplicationCommands.Find">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource QuickFind_16x}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Replace…" Command="ApplicationCommands.Replace">
+                <MenuItem Header="{x:Static local:SR.ReplaceMenuItem}" Command="ApplicationCommands.Replace">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource QuickReplace_16x}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Go to…" Command="cmd:RoutedCommands.GoTo" InputGestureText="Ctrl+G" />
+                <MenuItem Header="{x:Static local:SR.GoToMenuItem}" Command="cmd:RoutedCommands.GoTo" InputGestureText="Ctrl+G" />
                 <Separator />
-                <MenuItem Command="ApplicationCommands.SelectAll">
+                <MenuItem Header="{x:Static local:SR.SelectAllMenuItem}" Command="ApplicationCommands.SelectAll">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource Select_16x}"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 
             </MenuItem>
-            <MenuItem Header="_View">
-                <MenuItem Header="_Has Header" IsCheckable="True" IsChecked="{Binding  HasHeader}"/>
+            <MenuItem Header="{x:Static local:SR.ViewMenuItem}">
+                <MenuItem Header="{x:Static local:SR.HasHeaderMenuItem}" IsCheckable="True" IsChecked="{Binding  HasHeader}"/>
                 <Separator />
-                <MenuItem Header="_Toolbar" IsCheckable="True" IsChecked="{Binding ShowToolbar}" />
-                <MenuItem Header="St_atusbar" IsCheckable="True" IsChecked="{Binding ShowStatusbar}"/>
+                <MenuItem Header="{x:Static local:SR.ToolbarMenuItem}" IsCheckable="True" IsChecked="{Binding ShowToolbar}" />
+                <MenuItem Header="{x:Static local:SR.StatusbarMenuItem}" IsCheckable="True" IsChecked="{Binding ShowStatusbar}"/>
                 <Separator />
-                <MenuItem Header="_Settings…" Command="ApplicationCommands.Properties">
+                <MenuItem Header="{x:Static local:SR.SettingsMenuItem}" Command="ApplicationCommands.Properties">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource Settings_16x}"/>
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="_Help">
-                <MenuItem Header="_About" Command="ApplicationCommands.Help">
+            <MenuItem Header="{x:Static local:SR.HelpMenuItem}">
+                <MenuItem Header="{x:Static local:SR.AboutMenuItem}" Command="ApplicationCommands.Help">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource StatusHelp_16x}"/>
                     </MenuItem.Icon>
@@ -142,36 +145,36 @@
 
         <ToolBarTray DockPanel.Dock="Top" IsLocked="True" Visibility="{Binding ShowToolbar, Converter={StaticResource booleanToVisibilityConverter}}">
             <ToolBar>
-                <Button Command="ApplicationCommands.New" ToolTip="New File">
+                <Button Command="ApplicationCommands.New" ToolTip="{x:Static local:SR.NewFileTooltip}">
                     <Image Source="{StaticResource NewFile_16x}" />
                 </Button>
-                <Button Command="ApplicationCommands.Open" ToolTip="Open File">
+                <Button Command="ApplicationCommands.Open" ToolTip="{x:Static local:SR.OpenFileTooltip}">
                     <Image Source="{StaticResource OpenFolder_16x}" />
                 </Button>
-                <Button Command="ApplicationCommands.Save" ToolTip="Save File">
+                <Button Command="ApplicationCommands.Save" ToolTip="{x:Static local:SR.SaveFileTooltip}">
                     <Image Source="{StaticResource Save_16x}" />
                 </Button>
-                <Button Command="ApplicationCommands.Print" ToolTip="Print">
+                <Button Command="ApplicationCommands.Print" ToolTip="{x:Static local:SR.PrintTooltip}">
                     <Image Source="{StaticResource Print_16x}" />
                 </Button>
                 <Separator />
-                <Button Command="ApplicationCommands.Cut" ToolTip="Cut">
+                <Button Command="ApplicationCommands.Cut" ToolTip="{x:Static local:SR.CutTooltip}">
                     <Image Source="{StaticResource Cut_16x}" />
                 </Button>
-                <Button Command="ApplicationCommands.Copy" ToolTip="Copy">
+                <Button Command="ApplicationCommands.Copy" ToolTip="{x:Static local:SR.CopyTooltip}">
                     <Image Source="{StaticResource Copy_16x}" />
                 </Button>
-                <Button Command="ApplicationCommands.Paste" ToolTip="Paste">
+                <Button Command="ApplicationCommands.Paste" ToolTip="{x:Static local:SR.PasteTooltip}">
                     <Image Source="{StaticResource Paste_16x}" />
                 </Button>
                 <Separator />
                 <Grid>
-                    <CheckBox ToolTip="First row is header" Padding="4,0" VerticalAlignment="Center" IsChecked="{Binding HasHeader}">
+                    <CheckBox ToolTip="{x:Static local:SR.HasHeaderTooltip}" Padding="4,0" VerticalAlignment="Center" IsChecked="{Binding HasHeader}">
                         <TextBlock Text="Has Header" />
                     </CheckBox>
                 </Grid>
                 <Separator />
-                <Button Command="ApplicationCommands.Help" ToolTip="About">
+                <Button Command="ApplicationCommands.Help" ToolTip="{x:Static local:SR.AboutTooltip}">
                     <Image Source="{StaticResource StatusHelp_16x}" />
                 </Button>
             </ToolBar>
@@ -182,7 +185,7 @@
                 <TextBlock Text="{Binding StateMessage}" />
             </StatusBarItem>
             <Separator />
-            <StatusBarItem ToolTip="Delimiter">
+            <StatusBarItem ToolTip="{x:Static local:SR.DelimiterTooltip}">
                 <TextBlock Text="{Binding DelimiterName}" Width="70" TextAlignment="Center" />
             </StatusBarItem>
             <Separator />
@@ -190,18 +193,18 @@
                 <TextBlock x:Name="statusLabelSelect" />
             </StatusBarItem>
             <Separator />
-            <StatusBarItem ToolTip="Encoding">
+            <StatusBarItem ToolTip="{x:Static local:SR.EncodingTooltip}">
                 <TextBlock Text="{Binding Encoding.EncodingName}" />
             </StatusBarItem>
         </StatusBar>
 
         <Grid>
-            <local:GridControlHost x:Name="gridCtrl" AllowDrop="True" DragOver="Window_DragOver" Drop="Window_Drop" />
+            <ctrl:GridControlHost x:Name="gridCtrl" AllowDrop="True" DragOver="Window_DragOver" Drop="Window_Drop" />
             
-            <local:FindAndReplaceBar VerticalAlignment="Top" x:Name="findAndReplaceDlg" />
-            <local:GoToBar VerticalAlignment="Top" x:Name="goToDlg" />
+            <ctrl:FindAndReplaceBar VerticalAlignment="Top" x:Name="findAndReplaceDlg" />
+            <ctrl:GoToBar VerticalAlignment="Top" x:Name="goToDlg" />
 
-            <Button x:Name="gridColumnHeaderMenu" Opacity="0">
+            <Button x:Name="gridColumnHeaderMenu" VerticalAlignment="Top" Height="0">
                 <Button.ContextMenu>
                     <ContextMenu Placement="MousePoint" Closed="ContextMenu_Closed">
                         <MenuItem Header="Insert Column Before" Command="{Binding InsertColumnBefore}" />
@@ -223,7 +226,7 @@
                 </Button.ContextMenu>
             </Button>
 
-            <Button x:Name="gridRowHeaderMenu" Opacity="0">
+            <Button x:Name="gridRowHeaderMenu" VerticalAlignment="Top" Height="0">
                 <Button.ContextMenu>
                     <ContextMenu Placement="MousePoint" Closed="ContextMenu_Closed">
                         <MenuItem Header="Insert Row Above" InputGestureText="Ctrl+Shift+Insert" Command="{Binding InsertRowAbove}" />

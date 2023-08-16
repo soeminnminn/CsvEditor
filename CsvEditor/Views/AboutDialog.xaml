@@ -3,15 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CsvEditor.Views"
+        xmlns:local="clr-namespace:CsvEditor"
+        xmlns:view="clr-namespace:CsvEditor.Views"
         mc:Ignorable="d"
         Icon="/icon.ico"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
         WindowStyle="SingleBorderWindow"
-        Title="About"
+        Title="{x:Static local:SR.AboutWindowTitle}"
         Height="280" Width="400">
+    
     <Window.Resources>
         <SolidColorBrush x:Key="MouseOverBackground" Color="#EBF4FD" />
         <SolidColorBrush x:Key="MouseOverBorder" Color="#B8D6FB" />
@@ -25,7 +27,7 @@
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
             <Setter Property="Width" Value="{x:Static SystemParameters.WindowCaptionButtonWidth}" />
-            <Setter Property="ToolTip" Value="Close" />
+            <Setter Property="ToolTip" Value="{x:Static local:SR.CloseTooltip}" />
             <Setter Property="Command" Value="{x:Static SystemCommands.CloseWindowCommand}" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -115,7 +117,7 @@
             </Setter>
         </Style>
 
-        <Style TargetType="local:AboutDialog">
+        <Style TargetType="view:AboutDialog">
             <Setter Property="WindowChrome.WindowChrome">
                 <Setter.Value>
                     <WindowChrome CornerRadius="{x:Static SystemParameters.WindowCornerRadius}" 
@@ -176,7 +178,7 @@
         </Style>
     </Window.Resources>
 
-    <TabControl BorderThickness="0" Margin="8,4,8,4" SelectedIndex="{Binding Path=TabSelected, RelativeSource={RelativeSource AncestorType={x:Type local:AboutDialog}}}">
+    <TabControl BorderThickness="0" Margin="8,4,8,4" SelectedIndex="{Binding Path=TabSelected, RelativeSource={RelativeSource AncestorType={x:Type view:AboutDialog}}}">
         <TabControl.ItemContainerStyle>
             <Style TargetType="{x:Type TabItem}">
                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -184,21 +186,21 @@
         </TabControl.ItemContainerStyle>
         <TabItem>
             <StackPanel>
-                <TextBlock TextAlignment="Center" Margin="0,0,0,8"  Text="{Binding Path=Version, RelativeSource={RelativeSource AncestorType={x:Type local:AboutDialog}}}" />
-                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Text="{Binding Path=Copyright, RelativeSource={RelativeSource AncestorType={x:Type local:AboutDialog}}}" />
+                <TextBlock TextAlignment="Center" Margin="0,0,0,8"  Text="{Binding Path=Version, RelativeSource={RelativeSource AncestorType={x:Type view:AboutDialog}}}" />
+                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Text="{Binding Path=Copyright, RelativeSource={RelativeSource AncestorType={x:Type view:AboutDialog}}}" />
             </StackPanel>
         </TabItem>
         <TabItem>
             <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0.5">
                 <ScrollViewer>
-                    <TextBlock Padding="4" TextWrapping="Wrap" Text="{Binding Path=Credits, RelativeSource={RelativeSource AncestorType={x:Type local:AboutDialog}}}" />
+                    <TextBlock Padding="4" TextWrapping="Wrap" Text="{Binding Path=Credits, RelativeSource={RelativeSource AncestorType={x:Type view:AboutDialog}}}" />
                 </ScrollViewer>
             </Border>
         </TabItem>
         <TabItem>
             <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0.5">
                 <ScrollViewer>
-                    <TextBlock Padding="4" TextWrapping="Wrap" Text="{Binding Path=License, RelativeSource={RelativeSource AncestorType={x:Type local:AboutDialog}}}" />
+                    <TextBlock Padding="4" TextWrapping="Wrap" Text="{Binding Path=License, RelativeSource={RelativeSource AncestorType={x:Type view:AboutDialog}}}" />
                 </ScrollViewer>
             </Border>
         </TabItem>

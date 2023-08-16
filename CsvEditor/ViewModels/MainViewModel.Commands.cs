@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Collections.Generic;
@@ -8,26 +7,25 @@ using Microsoft.Win32;
 using CsvEditor.Commands;
 using CsvEditor.RecentFiles;
 using CsvEditor.Interfaces;
-using System.Threading.Tasks;
 
 namespace CsvEditor.ViewModels
 {
     public partial class MainViewModel : IModelCommands
     {
         #region Variables
-        private const int DEFAULT_COLUMNS_COUNT = 2;
+        private const string AllFileFilter = "All File|*.*";
 
+        private List<string> openFileFilters = new List<string>();
         private OpenFileDialog openFileDialog = new OpenFileDialog()
         {
             Title = "Open file",
-            Filter = "Csv File|*.csv;*.tsv|All File|*.*",
             CheckFileExists = true
         };
 
+        private List<string> saveFileFilters = new List<string>();
         private SaveFileDialog saveFileDialog = new SaveFileDialog()
         {
             Title = "Save file",
-            Filter = "Csv File|*.csv|Tsv File|*.tsv|All File|*.*",
             OverwritePrompt = true,
             AddExtension = true,
         };
@@ -115,6 +113,11 @@ namespace CsvEditor.ViewModels
         {
             mainWindow = window;
 
+            openFileFilters.Add("Csv/Tsv File|*.csv;*.tsv");
+
+            saveFileFilters.Add("Csv File|*.csv");
+            saveFileFilters.Add("Tsv File|*.tsv");
+
             recentFilesMenu = new RecentFilesMenu(config);
             recentFilesMenu.RecentFileSelected += RecentFile_Selected;
             recentFilesMenu.Initialize(miRecentFiles);
@@ -156,8 +159,7 @@ namespace CsvEditor.ViewModels
         {
             if (IsEdited)
             {
-                var result = MessageBox.Show(Properties.Resources.MessageNeedSaveString, Properties.Resources.Title,
-                    MessageBoxButton.YesNoCancel, MessageBoxImage.Exclamation);
+                var result = MessageBox.Show(SR.MessageNeedSave, SR.AppName, MessageBoxButton.YesNoCancel, MessageBoxImage.Exclamation);
 
                 switch (result)
                 {
@@ -166,6 +168,7 @@ namespace CsvEditor.ViewModels
                             string fileName = string.Empty;
                             if (!IsLoaded)
                             {
+                                saveFileDialog.Filter = string.Join("|", saveFileFilters) + "|" + AllFileFilter;
                                 if (saveFileDialog.ShowDialog(mainWindow) == true)
                                 {
                                     fileName = saveFileDialog.FileName;
@@ -192,6 +195,7 @@ namespace CsvEditor.ViewModels
 
         public void OnOpenFileExecuted()
         {
+            openFileDialog.Filter = string.Join("|", openFileFilters) + "|" + AllFileFilter;
             if (openFileDialog.ShowDialog(mainWindow) == true)
             {
                 LoadFile(openFileDialog.FileName);
@@ -210,6 +214,7 @@ namespace CsvEditor.ViewModels
 
         public void OnSaveAsExecuted()
         {
+            saveFileDialog.Filter = string.Join("|", saveFileFilters) + "|" + AllFileFilter;
             if (saveFileDialog.ShowDialog(mainWindow) == true)
             {
                 SaveFile(saveFileDialog.FileName);
