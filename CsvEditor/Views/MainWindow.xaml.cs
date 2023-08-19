@@ -103,7 +103,8 @@ namespace CsvEditor.Views
                 return;
             }
 
-            Model.InitializeCommands(this, menuRecentFiles);
+            Model.Initialize(this);
+            Model.InitializeCommands(menuRecentFiles);
             Model.InitializeGrid(gridCtrl);
             Model.InitializePlugins(menuExport);
 

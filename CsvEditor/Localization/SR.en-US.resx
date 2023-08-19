@@ -1,0 +1,388 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutWindowTitle" xml:space="preserve">
+    <value>About - CSV Editor</value>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>CSV Editor</value>
+  </data>
+  <data name="MainWindowTitle" xml:space="preserve">
+    <value>CSV Editor</value>
+  </data>
+  <data name="SettingsWindowTitle" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>_Ok</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>_Cancel</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DefaultDelimiter" xml:space="preserve">
+    <value>Default _Delimiter</value>
+  </data>
+  <data name="DefaultEncoding" xml:space="preserve">
+    <value>Default _Encoding</value>
+  </data>
+  <data name="WithBOM" xml:space="preserve">
+    <value>With _BOM</value>
+  </data>
+  <data name="UseDefaultEncoding" xml:space="preserve">
+    <value>_Use Default Encoding on Save</value>
+  </data>
+  <data name="EditorFont" xml:space="preserve">
+    <value>Editor _Font</value>
+  </data>
+  <data name="EditorFontSize" xml:space="preserve">
+    <value>Editor Font Si_ze</value>
+  </data>
+  <data name="FileAssociations" xml:space="preserve">
+    <value>_File Associations</value>
+  </data>
+  <data name="AssociateCSVFile" xml:space="preserve">
+    <value>Associate CSV File (.csv)</value>
+  </data>
+  <data name="AssociateTSVFile" xml:space="preserve">
+    <value>Associate TSV File (.tsv)</value>
+  </data>
+  <data name="RemoveAllAssociations" xml:space="preserve">
+    <value>_Remove All</value>
+  </data>
+  <data name="OnStartUpOpen" xml:space="preserve">
+    <value>On _Startup Open</value>
+  </data>
+  <data name="StartUpBlank" xml:space="preserve">
+    <value>Blank</value>
+  </data>
+  <data name="OpenLastFile" xml:space="preserve">
+    <value>Last Opened File</value>
+  </data>
+  <data name="CreateNewFile" xml:space="preserve">
+    <value>New File</value>
+  </data>
+  <data name="FileMenuItem" xml:space="preserve">
+    <value>_File</value>
+  </data>
+  <data name="NewMenuItem" xml:space="preserve">
+    <value>_New</value>
+  </data>
+  <data name="OpenMenuItem" xml:space="preserve">
+    <value>_Open…</value>
+  </data>
+  <data name="RecentFilesMenuItem" xml:space="preserve">
+    <value>Recent _Files</value>
+  </data>
+  <data name="ClearListMenuItem" xml:space="preserve">
+    <value>_Clear List</value>
+  </data>
+  <data name="SaveMenuItem" xml:space="preserve">
+    <value>_Save</value>
+  </data>
+  <data name="SaveAsMenuItem" xml:space="preserve">
+    <value>Save _As…</value>
+  </data>
+  <data name="ExportMenuItem" xml:space="preserve">
+    <value>_Export</value>
+  </data>
+  <data name="PrintMenuItem" xml:space="preserve">
+    <value>_Print…</value>
+  </data>
+  <data name="PrintPreviewMenuItem" xml:space="preserve">
+    <value>Print Pre_view…</value>
+  </data>
+  <data name="ExitMenuItem" xml:space="preserve">
+    <value>E_xit</value>
+  </data>
+  <data name="EditMenuItem" xml:space="preserve">
+    <value>_Edit</value>
+  </data>
+  <data name="UndoMenuItem" xml:space="preserve">
+    <value>_Undo</value>
+  </data>
+  <data name="RedoMenuItem" xml:space="preserve">
+    <value>_Redo</value>
+  </data>
+  <data name="CutMenuItem" xml:space="preserve">
+    <value>Cu_t</value>
+  </data>
+  <data name="CopyMenuItem" xml:space="preserve">
+    <value>_Copy</value>
+  </data>
+  <data name="PasteMenuItem" xml:space="preserve">
+    <value>_Paste</value>
+  </data>
+  <data name="DeleteMenuItem" xml:space="preserve">
+    <value>_Delete</value>
+  </data>
+  <data name="FindMenuItem" xml:space="preserve">
+    <value>_Find…</value>
+  </data>
+  <data name="ReplaceMenuItem" xml:space="preserve">
+    <value>_Replace…</value>
+  </data>
+  <data name="GoToMenuItem" xml:space="preserve">
+    <value>_Go to…</value>
+  </data>
+  <data name="SelectAllMenuItem" xml:space="preserve">
+    <value>Select _All</value>
+  </data>
+  <data name="ViewMenuItem" xml:space="preserve">
+    <value>_View</value>
+  </data>
+  <data name="HasHeaderMenuItem" xml:space="preserve">
+    <value>_Has Header</value>
+  </data>
+  <data name="ToolbarMenuItem" xml:space="preserve">
+    <value>_Toolbar</value>
+  </data>
+  <data name="StatusbarMenuItem" xml:space="preserve">
+    <value>St_atusbar</value>
+  </data>
+  <data name="SettingsMenuItem" xml:space="preserve">
+    <value>_Settings…</value>
+  </data>
+  <data name="HelpMenuItem" xml:space="preserve">
+    <value>_Help</value>
+  </data>
+  <data name="AboutMenuItem" xml:space="preserve">
+    <value>_About</value>
+  </data>
+  <data name="NewFileTooltip" xml:space="preserve">
+    <value>New File</value>
+  </data>
+  <data name="OpenFileTooltip" xml:space="preserve">
+    <value>Open File</value>
+  </data>
+  <data name="SaveFileTooltip" xml:space="preserve">
+    <value>Save File</value>
+  </data>
+  <data name="PrintTooltip" xml:space="preserve">
+    <value>Print</value>
+  </data>
+  <data name="CutTooltip" xml:space="preserve">
+    <value>Cut</value>
+  </data>
+  <data name="CopyTooltip" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="PasteTooltip" xml:space="preserve">
+    <value>Paste</value>
+  </data>
+  <data name="HasHeaderTooltip" xml:space="preserve">
+    <value>First row is header</value>
+  </data>
+  <data name="AboutTooltip" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="CloseTooltip" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="DelimiterTooltip" xml:space="preserve">
+    <value>Delimiter</value>
+  </data>
+  <data name="EncodingTooltip" xml:space="preserve">
+    <value>Encoding</value>
+  </data>
+  <data name="BarCloseTooltip" xml:space="preserve">
+    <value>Close (Esc)</value>
+  </data>
+  <data name="UpButtonTooltip" xml:space="preserve">
+    <value>Previous Match (Shift+Enter)</value>
+  </data>
+  <data name="DownButtonTooltip" xml:space="preserve">
+    <value>Next Match (Enter)</value>
+  </data>
+  <data name="SelectionButtonTooltip" xml:space="preserve">
+    <value>Find in Selection (Alt+L)</value>
+  </data>
+  <data name="ReplaceButtonTooltip" xml:space="preserve">
+    <value>Replace (Ctrl+Enter)</value>
+  </data>
+  <data name="ReplaceAllButtonTooltip" xml:space="preserve">
+    <value>Replace All (Ctrl+Alt+Enter)</value>
+  </data>
+  <data name="CaseButtonTooltip" xml:space="preserve">
+    <value>Match Case (Alt+C)</value>
+  </data>
+  <data name="WholeWordButtonTooltip" xml:space="preserve">
+    <value>Match Whole Word (Alt+W)</value>
+  </data>
+  <data name="RegexButtonTooltip" xml:space="preserve">
+    <value>Use Regular Expression (Alt+R)</value>
+  </data>
+  <data name="PreserveCaseButtonTooltip" xml:space="preserve">
+    <value>Preserve Case (Alt+P)</value>
+  </data>
+  <data name="XyButtonTooltip" xml:space="preserve">
+    <value>Goto X,Y (Alt+X)</value>
+  </data>
+  <data name="AcceptButtonTooltip" xml:space="preserve">
+    <value>Accept (Enter)</value>
+  </data>
+  <data name="MessageLoading" xml:space="preserve">
+    <value>Loading</value>
+  </data>
+  <data name="MessageSaving" xml:space="preserve">
+    <value>Saving</value>
+  </data>
+  <data name="MessageReady" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="NoResults" xml:space="preserve">
+    <value>No results</value>
+  </data>
+  <data name="CurrentLocation" xml:space="preserve">
+    <value>Row: {0}, Cell: {1}</value>
+  </data>
+  <data name="MessageNeedSave" xml:space="preserve">
+    <value>Do you want to save changes?</value>
+  </data>
+  <data name="MessageSave" xml:space="preserve">
+    <value>Data has been save successfull.</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="Credits" xml:space="preserve">
+    <value>Credits</value>
+  </data>
+  <data name="License" xml:space="preserve">
+    <value>License</value>
+  </data>
+  <data name="DevelopBy" xml:space="preserve">
+    <value>Develop by</value>
+  </data>
+  <data name="AboutText" xml:space="preserve">
+    <value>Develop by Soe Minn Minn
+Copyright © 2023 The Open Source Project</value>
+  </data>
+  <data name="LicenseText" xml:space="preserve">
+    <value>Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.</value>
+  </data>
+</root>

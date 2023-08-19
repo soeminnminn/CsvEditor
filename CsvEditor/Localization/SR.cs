@@ -1,18 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
+using System.Resources;
 using System.Windows;
 
 namespace CsvEditor
 {
-    internal static class SR
+    internal class SR
     {
         #region Variables
+        private static SR loader = null;
+        private readonly ResourceManager resources = null;
+
         private static CultureInfo culture = CultureInfo.CurrentCulture;
         private static Dictionary<string, string> cache = new Dictionary<string, string>();
         #endregion
 
+        #region Constructor
+        protected SR()
+        {
+            resources = new ResourceManager(typeof(SR).FullName, Assembly.GetExecutingAssembly());
+        }
+        #endregion
+
         #region Methods
+        private static SR GetLoader()
+        {
+            if (loader == null)
+                loader = new SR();
+            return loader;
+        }
+
         internal static string GetString(string name)
         {
             return GetString(SR.Culture, name);
@@ -28,7 +47,12 @@ namespace CsvEditor
             }
             else
             {
-                var res = Application.Current.FindResource(name) as string;
+                SR sys = GetLoader();
+                string res = sys.resources.GetString(name, culture);
+
+                if (string.IsNullOrEmpty(res))
+                    res = Application.Current.FindResource(name) as string;
+
                 if (!string.IsNullOrEmpty(res))
                 {
                     cache.Add(key, res);

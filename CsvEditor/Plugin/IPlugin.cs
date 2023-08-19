@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Input;
 
 namespace CsvEditor.Plugin
@@ -15,6 +16,6 @@ namespace CsvEditor.Plugin
 
         ICommand Command { get; }
 
-        void OnPluginLoaded();
+        void OnPluginLoaded(Window window);
     }
 }

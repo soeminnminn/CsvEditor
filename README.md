@@ -1,18 +1,23 @@
 # CsvEditor
-CSV Editor
+CSV/TSV Lightweight Editor for windows
 
 ![CsvEditor Screenshot][1]
 
 ## Change Log
 
-#### Version 2.0.0
+#### Version 2.1.0.0
+- Fix Localization.
+- Fix Version Informations.
+- Add Export Html Plugin.
+
+#### Version 2.0.0.0
 - Bug fix.
 - Add Localization.
 - Add File Associations.
 - Add Startup open option.
 - Add Export Plugin Support (WIP).
 
-#### Version 1.0.0
+#### Version 1.0.0.0
 - Intial release.
 
 License

@@ -25,39 +25,30 @@ namespace CsvEditor.ViewModels
         public void InitializePlugins(MenuItem exportMenu)
         {
             _exportMenu = exportMenu;
-
             exportMenu.Visibility = Visibility.Collapsed;
 
-            Task.Factory.StartNew(() => 
+            var plugins = Manager.Plugins;
+
+            using (var emu = plugins.GetEnumerator())
             {
-                var plugins = Manager.Plugins;
-
-                using (var emu = plugins.GetEnumerator())
+                while (emu.MoveNext())
                 {
-                    while (emu.MoveNext())
+                    var plugin = emu.Current.Module;
+                    if (plugin == null) continue;
+
+                    try
                     {
-                        var plugin = emu.Current.Module;
-                        if (plugin == null) continue;
-
-                        try
-                        {
-                            Manager.SendOnPluginLoaded(emu.Current);
-                        }
-                        catch (Exception)
-                        {
-                            continue;
-                        }
-
-                        exportPlugins.Add(plugin);
+                        Manager.SendOnPluginLoaded(emu.Current, mainWindow);
                     }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
+
+                    exportPlugins.Add(plugin);
                 }
+            }
 
-                syncContext.Post(OnPluginsLoaded, this);
-            });
-        }
-
-        private void OnPluginsLoaded(object state)
-        {
             UpdateExportMenu();
         }
 

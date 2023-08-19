@@ -5,7 +5,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/CsvEditor;component/Localization/Lang.en-US.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/CsvEditor;component/Localization/SR.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/CsvEditor;component/Resources/Icons.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/CsvEditor;component/Resources/ComingSoon.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/CsvEditor;component/Themes/Generic.xaml" />

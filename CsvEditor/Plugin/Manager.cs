@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 
 namespace CsvEditor.Plugin
 {
@@ -30,11 +31,11 @@ namespace CsvEditor.Plugin
             }
         }
 
-        public static void SendOnPluginLoaded(AssmInfo<IExportPlugin> info)
+        public static void SendOnPluginLoaded(AssmInfo<IExportPlugin> info, Window window)
         {
             if (info != null && info.Module != null)
             {
-                info.Module.OnPluginLoaded();
+                info.Module.OnPluginLoaded(window);
             }
             else
             {

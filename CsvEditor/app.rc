@@ -1,3 +1,39 @@
+// #include "winres.h"
+
+#define VER_VERSION             				2,1,0,0
+#define VER_VERSION_STR         			"2.1.0.0\0"
+
+#define VER_NAME_STR         				"CsvEditor\0"
+#define VER_FILENAME_STR         		"CsvEditor.exe\0"
+#define VER_COMPANYNAME_STR 		"S16 Co. Ltd.\0"
+#define VER_FILEDESCRIPTION_STR	"CSV/TSV Text Editor\0"
+#define VER_LEGALCOPYRIGHT_STR	"Copyright (c) 2023 The Open Source Project\0"
+
+#ifndef VS_VERSION_INFO
+#define VS_VERSION_INFO 					0x1L
+#define VS_FF_DEBUG 							0x1L
+#define VS_FFI_FILEFLAGSMASK 			0x17L
+#define VER_PRIVATEBUILD 				0x0L
+#define VER_PRERELEASE 					0x0L
+#define VOS__WINDOWS32 					0x4L
+#define VFT_EXE 									0x1L
+#define VFT_DLL 									0x2L
+#define VFT2_UNKNOWN 						0x0L
+#endif
+
+#ifndef RT_MANIFEST
+#define RT_MANIFEST                    		24
+#endif
+
+#ifndef IDR_MANIFEST
+#define IDR_MANIFEST                    	1
+#endif
+
+#define IDI_ICONAPP                       	101
+#define IDI_ICONCSV                       	102
+#define IDI_ICONTSV                       	103
+#define IDI_ICONCSVX                     	104
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Icon
@@ -5,14 +41,47 @@
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-100 ICON    "icon.ico"
-101 ICON    "Resources\\csv_file.ico"
-102 ICON    "Resources\\tsv_file.ico"
-103 ICON    "Resources\\ms_csv_icon.ico"
+IDI_ICONAPP 	ICON    "icon.ico"
+IDI_ICONCSV 	ICON    "Resources\\csv_file.ico"
+IDI_ICONTSV 	ICON    "Resources\\tsv_file.ico"
+IDI_ICONCSVX  ICON    "Resources\\ms_csv_icon.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Manifest
 //
-100 24      "app.manifest"
+IDR_MANIFEST RT_MANIFEST      "app.manifest"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version info
+//
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION VER_VERSION
+ PRODUCTVERSION VER_VERSION
+ FILEFLAGSMASK 0x3fL
+ FILEFLAGS 0x0L
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName", 		VER_COMPANYNAME_STR
+            VALUE "FileDescription", 		VER_FILEDESCRIPTION_STR
+            VALUE "FileVersion", 			VER_VERSION_STR
+            VALUE "InternalName", 		VER_FILENAME_STR
+            VALUE "LegalCopyright", 		VER_LEGALCOPYRIGHT_STR
+            VALUE "OriginalFilename", 	VER_FILENAME_STR
+            VALUE "ProductName", 		VER_NAME_STR
+            VALUE "ProductVersion", 		VER_VERSION_STR
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 0x04E4
+    END
+END

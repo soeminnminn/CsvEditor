@@ -18,19 +18,15 @@ namespace CsvEditor.ViewModels
         private List<string> openFileFilters = new List<string>();
         private OpenFileDialog openFileDialog = new OpenFileDialog()
         {
-            Title = "Open file",
             CheckFileExists = true
         };
 
         private List<string> saveFileFilters = new List<string>();
         private SaveFileDialog saveFileDialog = new SaveFileDialog()
         {
-            Title = "Save file",
             OverwritePrompt = true,
             AddExtension = true,
         };
-
-        private Window mainWindow = Application.Current.MainWindow;
 
         private bool showToolbar = true;
         private bool showStatusbar = true;
@@ -109,10 +105,8 @@ namespace CsvEditor.ViewModels
         #endregion
 
         #region Methods
-        public void InitializeCommands(Window window, MenuItem miRecentFiles)
+        public void InitializeCommands(MenuItem miRecentFiles)
         {
-            mainWindow = window;
-
             openFileFilters.Add("Csv/Tsv File|*.csv;*.tsv");
 
             saveFileFilters.Add("Csv File|*.csv");

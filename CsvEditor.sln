@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvEditor", "CsvEditor\CsvE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vspGridControl", "vspGridControl\vspGridControl.csproj", "{25D73C97-FABB-4628-8E66-BD2BAB472561}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.ExportHtml", "Plugin.ExportHtml\Plugin.ExportHtml.csproj", "{9519F4C5-F9E3-4270-8F94-FFA7EADAB873}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{25D73C97-FABB-4628-8E66-BD2BAB472561}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25D73C97-FABB-4628-8E66-BD2BAB472561}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25D73C97-FABB-4628-8E66-BD2BAB472561}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9519F4C5-F9E3-4270-8F94-FFA7EADAB873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9519F4C5-F9E3-4270-8F94-FFA7EADAB873}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9519F4C5-F9E3-4270-8F94-FFA7EADAB873}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9519F4C5-F9E3-4270-8F94-FFA7EADAB873}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

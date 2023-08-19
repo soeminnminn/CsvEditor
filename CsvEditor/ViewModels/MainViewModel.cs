@@ -13,6 +13,8 @@ using S16.Collections;
 using CsvEditor.Observable;
 using CsvEditor.Interfaces;
 using CsvEditor.Models;
+using System.Windows.Input;
+using System.Windows;
 
 namespace CsvEditor.ViewModels
 {
@@ -27,6 +29,7 @@ namespace CsvEditor.ViewModels
         private readonly SynchronizationContext syncContext;
         private bool _disposed = false;
 
+        private Window mainWindow = Application.Current.MainWindow;
         private readonly ConfigModel config;
 
         private string stateMessage = "Ready";
@@ -150,7 +153,6 @@ namespace CsvEditor.ViewModels
             syncContext = SynchronizationContext.Current;
 
             config = new ConfigModel();
-            LoadConfig();
 
             watcher = new FileWatcher();
             watcher.Changed += Watcher_Changed;
@@ -281,10 +283,18 @@ namespace CsvEditor.ViewModels
                 gs.UpdateGrid();
 
             items.ResumeHistory();
+
+            CommandManager.InvalidateRequerySuggested();
         }
         #endregion
 
         #region Methods
+        public void Initialize(Window window)
+        {
+            mainWindow = window;
+            LoadConfig();
+        }
+
         public static bool IsSupportedFile(string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) return false;

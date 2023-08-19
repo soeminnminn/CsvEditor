@@ -13,7 +13,7 @@ namespace CsvEditor.Interfaces
 
         IRecentFilesMenu RecentFilesMenu { get; }
 
-        void InitializeCommands(Window window, MenuItem miRecentFiles);
+        void InitializeCommands(MenuItem miRecentFiles);
 
         void AddRecentFile(string fileName);
 

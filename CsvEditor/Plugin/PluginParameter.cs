@@ -64,6 +64,11 @@ namespace CsvEditor.Plugin
             get => _model.HasHeader;
         }
 
+        public bool HasData
+        {
+            get => _model.HasData;
+        }
+
         public IEnumerable<string[]> Data
         {
             get => _model.ItemsSource;
