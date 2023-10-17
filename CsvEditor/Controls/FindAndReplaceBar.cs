@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,9 +11,9 @@ namespace CsvEditor.Controls
 {
     [TemplatePart(Name = PART_Popup, Type = typeof(Popup))]
     [TemplatePart(Name = PART_Gripper, Type = typeof(Thumb))]
-    [TemplatePart(Name = PART_FindInput, Type = typeof(TextBox))]
+    [TemplatePart(Name = PART_FindInput, Type = typeof(ComboBox))]
     [TemplatePart(Name = PART_ReplaceBarRow, Type = typeof(RowDefinition))]
-    [TemplatePart(Name = PART_ReplaceInput, Type = typeof(TextBox))]
+    [TemplatePart(Name = PART_ReplaceInput, Type = typeof(ComboBox))]
     public class FindAndReplaceBar : Control
     {
         #region Variables
@@ -26,13 +27,18 @@ namespace CsvEditor.Controls
         private Popup popup = null;
         private FrameworkElement rootContainer = null;
         private Thumb gripper = null;
-        private TextBox textBoxFind = null;
-        private TextBox textBoxReplace = null;
+        private ComboBox findInput = null;
+        private ComboBox replaceInput = null;
         private RowDefinition replaceBarRow = null;
 
         private double windowWidth = 0.0;
         private double popupWidth = 0.0;
         private double originalWidth = 0.0;
+
+        private bool suppressChanged = false;
+
+        private ObservableCollection<FindReplaceHistory> findHistories = new ObservableCollection<FindReplaceHistory>();
+        private ObservableCollection<FindReplaceHistory> replaceHistories = new ObservableCollection<FindReplaceHistory>();
 
         public static readonly RoutedCommand FindInSelectionCommand = new RoutedCommand("FindInSelectionCommand", typeof(FindAndReplaceBar));
         public static readonly RoutedCommand FindMatchCaseCommand = new RoutedCommand("FindMatchCaseCommand", typeof(FindAndReplaceBar));
@@ -209,28 +215,44 @@ namespace CsvEditor.Controls
             set { SetValue(PreserveCaseProperty, value); }
         }
 
+        [Browsable(false)]
         public string FindText
         {
             get => (string)GetValue(FindTextProperty);
             set { SetValue(FindTextProperty, value); }
         }
 
+        [Browsable(false)]
         public string ReplaceText
         {
             get => (string)GetValue(ReplaceTextProperty);
             set { SetValue(ReplaceTextProperty, value); }
         }
 
+        [Browsable(false)]
         public int FoundCount
         {
             get => (int)GetValue(FoundCountProperty);
             set { SetValue(FoundCountProperty, value); }
         }
 
+        [Browsable(false)]
         public int FindIndex
         {
             get => (int)GetValue(FindIndexProperty);
             set { SetValue(FindIndexProperty, value); }
+        }
+
+        [Browsable(false)]
+        public ObservableCollection<FindReplaceHistory> FindHistories
+        {
+            get => findHistories;
+        }
+
+        [Browsable(false)]
+        public ObservableCollection<FindReplaceHistory> ReplaceHistories
+        {
+            get => replaceHistories;
         }
 
         [Bindable(false), Browsable(false)]
@@ -239,21 +261,25 @@ namespace CsvEditor.Controls
             get => (string)GetValue(FindCountTextProperty);
         }
 
+        [Browsable(false)]
         public ICommand FindPreviousCommand
         {
             get => findPreviousCommand;
         }
 
+        [Browsable(false)]
         public ICommand FindNextCommand
         {
             get => findNextCommand;
         }
 
+        [Browsable(false)]
         public ICommand FindReplaceCommand
         {
             get => findReplaceCommand;
         }
 
+        [Browsable(false)]
         public ICommand FindReplaceAllCommand
         {
             get => findReplaceAllCommand;
@@ -448,8 +474,8 @@ namespace CsvEditor.Controls
             rootContainer = GetTemplateChild(PART_RootContainer) as FrameworkElement;
             replaceBarRow = GetTemplateChild(PART_ReplaceBarRow) as RowDefinition;
             popup = GetTemplateChild(PART_Popup) as Popup;
-            textBoxFind = GetTemplateChild(PART_FindInput) as TextBox;
-            textBoxReplace = GetTemplateChild(PART_ReplaceInput) as TextBox;
+            findInput = GetTemplateChild(PART_FindInput) as ComboBox;
+            replaceInput = GetTemplateChild(PART_ReplaceInput) as ComboBox;
 
             if (popup != null)
             {
@@ -458,13 +484,19 @@ namespace CsvEditor.Controls
                 popup.Opened += Popup_Opened;
                 popup.Closed += Popup_Closed;
             }
-            if (textBoxFind != null)
+
+            if (findInput != null)
             {
-                textBoxFind.TextChanged += TextBoxFind_TextChanged;
+                findInput.AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(FindInput_TextChanged));
+                findInput.PreviewMouseDoubleClick += FindInput_PreviewMouseDoubleClick;
+                findInput.SelectionChanged += FindInput_SelectionChanged;
             }
-            if (textBoxReplace != null)
+
+            if (replaceInput != null)
             {
-                textBoxReplace.TextChanged += TextBoxReplace_TextChanged;
+                replaceInput.AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(ReplaceInput_TextChanged));
+                replaceInput.PreviewMouseDoubleClick += ReplaceInput_PreviewMouseDoubleClick;
+                replaceInput.SelectionChanged += ReplaceInput_SelectionChanged;
             }
 
             HookupGripperEvents();
@@ -474,9 +506,9 @@ namespace CsvEditor.Controls
         {
             base.OnGotFocus(e);
 
-            if (IsOpen && textBoxFind != null)
+            if (IsOpen && findInput != null)
             {
-                Keyboard.Focus(textBoxFind);
+                Keyboard.Focus(findInput);
             }
         }
 
@@ -533,9 +565,9 @@ namespace CsvEditor.Controls
 
         private void Popup_Opened(object sender, EventArgs e)
         {
-            if (textBoxFind != null)
+            if (findInput != null)
             {
-                Keyboard.Focus(textBoxFind);
+                Keyboard.Focus(findInput);
             }
             RaiseIsOpenChangedEvent();
         }
@@ -545,13 +577,41 @@ namespace CsvEditor.Controls
             RaiseIsOpenChangedEvent();
         }
 
-        private void TextBoxFind_TextChanged(object sender, TextChangedEventArgs e)
+        private void FindInput_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (sender is TextBox t)
+            if (suppressChanged) return;
+
+            if (sender is ComboBox ctrl)
             {
-                string newText = t.Text;
+                suppressChanged = true;
+                string newText = ctrl.Text;
                 OnFindTextChanged(newText);
                 RaiseFindTextChangedEvent(newText);
+                suppressChanged = false;
+            }
+        }
+
+        private void FindInput_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is ComboBox ctrl && ctrl.HasItems && !ctrl.IsDropDownOpen)
+            {
+                ctrl.IsDropDownOpen = true;
+            }
+        }
+
+        private void FindInput_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (suppressChanged) return;
+
+            if (sender is ComboBox ctrl)
+            {
+                var item = ctrl.SelectedItem as FindReplaceHistory;
+                if (item != null)
+                {
+                    MatchCase = item.MatchCase;
+                    MatchWholeWord = item.MatchWholeWord;
+                    UseRegex = item.UseRegex;
+                }
             }
         }
 
@@ -559,13 +619,39 @@ namespace CsvEditor.Controls
         {
         }
 
-        private void TextBoxReplace_TextChanged(object sender, TextChangedEventArgs e)
+        private void ReplaceInput_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (sender is TextBox t)
+            if (suppressChanged) return;
+
+            if (sender is ComboBox ctrl)
             {
-                string newText = t.Text;
+                suppressChanged = true;
+                string newText = ctrl.Text;
                 OnReplaceTextChanged(newText);
                 RaiseReplaceTextChangedEvent(newText);
+                suppressChanged = false;
+            }
+        }
+
+        private void ReplaceInput_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is ComboBox ctrl && ctrl.HasItems && !ctrl.IsDropDownOpen)
+            {
+                ctrl.IsDropDownOpen = true;
+            }
+        }
+
+        private void ReplaceInput_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (suppressChanged) return;
+
+            if (sender is ComboBox ctrl)
+            {
+                var item = ctrl.SelectedItem as FindReplaceHistory;
+                if (item != null)
+                {
+                    PreserveCase = item.PreserveCase;
+                }
             }
         }
 
@@ -783,7 +869,7 @@ namespace CsvEditor.Controls
 
         protected virtual bool RaiseFindTextChangedEvent(string text)
         {
-            if (textBoxFind == null) return false;
+            if (findInput == null) return false;
 
             RoutedFindEventArgs args = new RoutedFindEventArgs(text, SearchDirection.All, MatchCase, MatchWholeWord, UseRegex, InSelection);
             args.RoutedEvent = FindTextChangedEvent;
@@ -794,9 +880,9 @@ namespace CsvEditor.Controls
 
         protected virtual bool RaiseReplaceTextChangedEvent(string text)
         {
-            if (textBoxReplace == null) return false;
+            if (replaceInput == null) return false;
 
-            string searchText = textBoxFind.Text;
+            string searchText = findInput.Text;
 
             RoutedReplaceEventArgs args = new RoutedReplaceEventArgs(searchText, text, SearchDirection.All, false,
                 MatchCase, MatchWholeWord, UseRegex, InSelection, PreserveCase);
@@ -808,9 +894,19 @@ namespace CsvEditor.Controls
 
         protected virtual bool RaiseFindAcceptedEvent(SearchDirection direction)
         {
-            if (textBoxFind == null) return false;
+            if (findInput == null) return false;
 
-            string searchText = textBoxFind.Text;
+            string searchText = findInput.Text;
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                var item = new FindReplaceHistory(searchText, MatchCase, MatchWholeWord, UseRegex, PreserveCase);
+                if (FindHistories.Contains(item))
+                {
+                    FindHistories.Remove(item);
+                }
+                FindHistories.Insert(0, item);
+            }
 
             RoutedFindEventArgs args = new RoutedFindEventArgs(searchText, direction, MatchCase, MatchWholeWord, UseRegex, InSelection);
             args.RoutedEvent = FindAcceptedEvent;
@@ -821,12 +917,22 @@ namespace CsvEditor.Controls
 
         protected virtual bool RaiseReplaceAcceptedEvent(SearchDirection direction, bool replaceAll = false)
         {
-            if (textBoxFind == null || textBoxReplace == null) return false;
+            if (findInput == null || replaceInput == null) return false;
 
-            string searchText = textBoxFind.Text;
+            string searchText = findInput.Text;
             if (string.IsNullOrEmpty(searchText)) return false;
 
-            string replaceText = textBoxReplace.Text;
+            string replaceText = replaceInput.Text;
+
+            if (!string.IsNullOrEmpty(replaceText))
+            {
+                var item = new FindReplaceHistory(replaceText, MatchCase, MatchWholeWord, UseRegex, PreserveCase);
+                if (ReplaceHistories.Contains(item))
+                {
+                    ReplaceHistories.Remove(item);
+                }
+                ReplaceHistories.Insert(0, item);
+            }
 
             RoutedReplaceEventArgs args = new RoutedReplaceEventArgs(searchText, replaceText, direction, replaceAll, 
                 MatchCase, MatchWholeWord, UseRegex, InSelection, PreserveCase);
@@ -840,7 +946,7 @@ namespace CsvEditor.Controls
 
         public bool CanFind(SearchDirection direction)
         {
-            bool result = IsOpen && textBoxFind != null && !string.IsNullOrEmpty(textBoxFind.Text) && FoundCount > 0;
+            bool result = IsOpen && findInput != null && !string.IsNullOrEmpty(findInput.Text) && FoundCount > 0;
             
             if (direction == SearchDirection.Next)
                 result = result && FindIndex < FoundCount;
@@ -852,13 +958,22 @@ namespace CsvEditor.Controls
 
         public bool CanReplace(SearchDirection direction)
         {
-            return CanFind(direction) && textBoxReplace != null && !string.IsNullOrEmpty(textBoxReplace.Text);
+            return CanFind(direction) && replaceInput != null && !string.IsNullOrEmpty(replaceInput.Text);
         }
 
         public void Show()
         {
             IsOpen = true;
             Focus();
+        }
+
+        public void Clear()
+        {
+            suppressChanged = true;
+            findInput.Text = string.Empty;
+            replaceInput.Text = string.Empty;
+            FoundCount = 0;
+            suppressChanged = false;
         }
 
         public void Show(bool isReplace)
@@ -874,10 +989,58 @@ namespace CsvEditor.Controls
         #endregion
     }
 
+    public class FindReplaceHistory
+    {
+        #region Members
+        public string Text { get; private set; }
+
+        public bool MatchCase { get; private set; }
+
+        public bool MatchWholeWord { get; private set; }
+
+        public bool UseRegex { get; private set; }
+
+        public bool PreserveCase { get; private set; }
+        #endregion
+
+        #region Constructor
+        public FindReplaceHistory(string text, bool matchCase = false, bool matchWholeWord = false, bool useRegex = false, bool preserveCase = false)
+        {
+            Text = text;
+            MatchCase = matchCase;
+            MatchWholeWord = matchWholeWord;
+            UseRegex = useRegex;
+            PreserveCase = preserveCase;
+        }
+        #endregion
+
+        #region Methods
+        public override string ToString()
+        {
+            return Text;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is string str)
+                return str == Text;
+            else if (obj is FindReplaceHistory other)
+                return other.Text == Text && other.MatchCase == MatchCase && other.MatchWholeWord == MatchWholeWord && other.UseRegex == UseRegex && other.PreserveCase == PreserveCase;
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Text.GetHashCode();
+        }
+        #endregion
+    }
+
     #region RoutedOptionsChangedEvent
     public delegate void RoutedOptionsChangedEventHandler(object sender, RoutedOptionsChangedEventArgs e);
     public class RoutedOptionsChangedEventArgs : RoutedEventArgs
     {
+        #region Members
         public bool MatchCase { get; private set; }
 
         public bool MatchWholeWord { get; private set; }
@@ -887,7 +1050,9 @@ namespace CsvEditor.Controls
         public bool InSelection { get; private set; }
 
         public bool PreserveCase { get; private set; }
+        #endregion
 
+        #region Constructor
         public RoutedOptionsChangedEventArgs(bool matchCase = false, bool matchWholeWord = false, bool useRegex = false, bool inSelection = false, bool preserveCase = false)
         {
             MatchCase = matchCase;
@@ -896,6 +1061,7 @@ namespace CsvEditor.Controls
             InSelection = inSelection;
             PreserveCase = preserveCase;
         }
+        #endregion
     }
     #endregion
 
@@ -911,6 +1077,7 @@ namespace CsvEditor.Controls
     public delegate void RoutedFindEventHandler(object sender, RoutedFindEventArgs e);
     public class RoutedFindEventArgs : RoutedEventArgs
     {
+        #region Members
         public string SearchText { get; private set; }
 
         public bool MatchCase { get; private set; }
@@ -922,7 +1089,9 @@ namespace CsvEditor.Controls
         public bool InSelection { get; private set; }
 
         public SearchDirection SearchDirection { get; private set; }
+        #endregion
 
+        #region Constructor
         public RoutedFindEventArgs(string searchText, SearchDirection direction,
             bool matchCase = false, bool matchWholeWord = false, bool useRegex = false, bool inSelection = false)
         {
@@ -933,6 +1102,14 @@ namespace CsvEditor.Controls
             UseRegex = useRegex;
             InSelection = inSelection;
         }
+        #endregion
+
+        #region Methods
+        public override string ToString()
+        {
+            return SearchText;
+        }
+        #endregion
     }
     #endregion
 
@@ -940,12 +1117,15 @@ namespace CsvEditor.Controls
     public delegate void RoutedReplaceEventHandler(object sender, RoutedReplaceEventArgs e);
     public class RoutedReplaceEventArgs : RoutedFindEventArgs
     {
+        #region Members
         public string ReplaceText { get; private set; }
 
         public bool ReplaceAll { get; private set; }
 
         public bool PreserveCase { get; private set; }
+        #endregion
 
+        #region Constructor
         public RoutedReplaceEventArgs(string searchText, string replaceText, SearchDirection direction, bool replaceAll = false,
             bool matchCase = false, bool matchWholeWord = false, bool useRegex = false, bool inSelection = false, bool preserveCase = false)
             : base(searchText, direction, matchCase, matchWholeWord, useRegex, inSelection)
@@ -954,6 +1134,14 @@ namespace CsvEditor.Controls
             ReplaceAll = replaceAll;
             PreserveCase = preserveCase;
         }
+        #endregion
+
+        #region Methods
+        public override string ToString()
+        {
+            return ReplaceText;
+        }
+        #endregion
     }
     #endregion
 }

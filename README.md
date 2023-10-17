@@ -5,19 +5,24 @@ CSV/TSV Lightweight Editor for windows
 
 ## Change Log
 
-#### Version 2.1.0.0
+#### Version 2.2.1
+- Bug fix.
+- Add find and replace history.
+- Add loading.
+
+#### Version 2.1.0
 - Fix Localization.
 - Fix Version Informations.
 - Add Export Html Plugin.
 
-#### Version 2.0.0.0
+#### Version 2.0.0
 - Bug fix.
 - Add Localization.
 - Add File Associations.
 - Add Startup open option.
 - Add Export Plugin Support (WIP).
 
-#### Version 1.0.0.0
+#### Version 1.0.0
 - Intial release.
 
 License

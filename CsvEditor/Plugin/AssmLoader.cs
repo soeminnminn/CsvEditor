@@ -95,7 +95,6 @@ namespace CsvEditor.Plugin
             {
                 if (!File.Exists(assemblyPath)) return null;
 
-                T oLibrary = default(T);
                 Assembly asm = Assembly.LoadFrom(assemblyPath);
 
                 AssemblyName assemblyName = asm.GetName();
@@ -116,7 +115,7 @@ namespace CsvEditor.Plugin
 
                 if (foundType != null)
                 {
-                    oLibrary = (T)asm.CreateInstance(foundType.FullName);
+                    T oLibrary = (T)asm.CreateInstance(foundType.FullName);
                     return new AssmInfo<T>(assemblyPath, foundType, oLibrary, publicKey);
                 }
             }

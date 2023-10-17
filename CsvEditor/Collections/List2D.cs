@@ -775,38 +775,53 @@ namespace S16.Collections
                     _height = height;
                     _items = items;
                 }
-                else
+                else if (items != null)
                 {
                     _height = items.Length;
                     _itemsArray = items;
+                }
+                else
+                {
+                    _height = int.MaxValue;
                 }
             }
 
             public Enumeratorable(T[,] items)
             {
                 _version = 0;
-                _height = items.GetLength(0);
-                _items2dArray = items;
+                _height = int.MaxValue;
+                if (items != null)
+                {
+                    _height = items.GetLength(0);
+                    _items2dArray = items;
+                }
             }
 
             public Enumeratorable(T[][] items)
             {
                 _version = 0;
-                _height = items.Length;
-                _emu = items.GetEnumerator() as IEnumerator<T[]>;
+                _height = int.MaxValue;
+                if (items != null)
+                {
+                    _height = items.Length;
+                    _emu = items.GetEnumerator() as IEnumerator<T[]>;
+                }
             }
 
             public Enumeratorable(IEnumerable<T[]> items, bool forceCount = false)
             {
                 _version = 0;
-                if (items is ICollection<T[]> collection)
-                    _height = collection.Count;
-                else if (forceCount)
-                    _height = items.Count();
-                else
-                    _height = int.MaxValue;
+                _height = int.MaxValue;
 
-                _emu = items.GetEnumerator();
+                if (items != null)
+                {
+                    if (items is ICollection<T[]> collection)
+                        _height = collection.Count;
+                    else if (forceCount)
+                        _height = items.Count();
+
+                    _emu = items.GetEnumerator();
+                }
             }
 
             public Enumeratorable(IEnumerator<T[]> enumerator, bool forceCount = false)

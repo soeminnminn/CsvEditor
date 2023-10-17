@@ -1,7 +1,7 @@
 // #include "winres.h"
 
-#define VER_VERSION             				2,1,0,0
-#define VER_VERSION_STR         			"2.1.0.0\0"
+#define VER_VERSION             				2,2,1,0
+#define VER_VERSION_STR         			"2.2.1.0\0"
 
 #define VER_NAME_STR         				"CsvEditor\0"
 #define VER_FILENAME_STR         		"CsvEditor.exe\0"

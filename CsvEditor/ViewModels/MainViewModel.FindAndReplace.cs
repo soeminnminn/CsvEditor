@@ -117,6 +117,7 @@ namespace CsvEditor.ViewModels
             model.PropertyChanged += Model_PropertyChanged;
 
             ctrl.HasSelection = model.HasData;
+            ctrl.OptionsChanged += Ctrl_OptionsChanged;
             ctrl.FindTextChanged += Ctrl_FindTextChanged;
             ctrl.FindAccepted += Ctrl_FindAccepted;
             ctrl.ReplaceAccepted += Ctrl_ReplaceAccepted;
@@ -178,6 +179,17 @@ namespace CsvEditor.ViewModels
             if (e.PropertyName == "HasHeader" && ctrl.CanFind(SearchDirection.All))
             {
                 FindAll(ctrl.FindText, GetFindOptions());
+            }
+        }
+
+        private void Ctrl_OptionsChanged(object sender, RoutedOptionsChangedEventArgs e)
+        {
+            string searchText = ctrl.FindText;
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                FindOptions options = GetFindOptions();
+                findIndex = -1;
+                FindAll(searchText, options);
             }
         }
 
@@ -252,54 +264,64 @@ namespace CsvEditor.ViewModels
 
         public async void FindAll(string criteria, FindOptions options)
         {
-            await _semaphoreSlim.WaitAsync();
-
-            FoundResult lastRes = new FoundResult(-1);
-            if (findIndex > -1 && findIndex < results.Count)
+            try
             {
-                var current = results[findIndex];
-                lastRes = current.Clone();
-            }
+                await _semaphoreSlim.WaitAsync();
 
-            results.Clear();
-            findIndex = -1;
-            findRegex = null;
-
-            if (!string.IsNullOrWhiteSpace(criteria))
-            {
-                List2D<string> list = model.ItemsSource;
-                findRegex = FindTextToRegex(criteria, options);
-
-                list.ForAllColumn((val, y, x) =>
+                FoundResult lastRes = new FoundResult(-1);
+                if (findIndex > -1 && findIndex < results.Count)
                 {
-                    if (model.HasHeader && y == 0) return;
+                    var current = results[findIndex];
+                    lastRes = current.Clone();
+                }
 
-                    var matches = findRegex.Matches(val);
-                    if (matches.Count > 0)
+                results.Clear();
+                findIndex = -1;
+                findRegex = null;
+
+                if (!string.IsNullOrWhiteSpace(criteria))
+                {
+                    List2D<string> list = model.ItemsSource;
+                    findRegex = FindTextToRegex(criteria, options);
+
+                    if (findRegex != null)
                     {
-                        if (lastRes.Index > -1 && findIndex == -1)
+                        list.ForAllColumn((val, y, x) =>
                         {
-                            if (lastRes.Row == y && lastRes.Column == x)
-                                findIndex = results.Count;
-                            else if (lastRes.Row == y && lastRes.Column < x)
-                                findIndex = results.Count;
-                            else if (lastRes.Row < y)
-                                findIndex = results.Count;
-                        }
+                            if (model.HasHeader && y == 0) return;
 
-                        var res = new FoundResult(results.Count, y, x, matches.Count);
-                        for (int i = 0; i < matches.Count; i++)
-                        {
-                            var m = matches[i];
-                            res.Pointers[i] = new TextPointer(m.Index, m.Value);
-                        }
-                        results.Add(res);
+                            var matches = findRegex.Matches(val);
+                            if (matches.Count > 0)
+                            {
+                                if (lastRes.Index > -1 && findIndex == -1)
+                                {
+                                    if (lastRes.Row == y && lastRes.Column == x)
+                                        findIndex = results.Count;
+                                    else if (lastRes.Row == y && lastRes.Column < x)
+                                        findIndex = results.Count;
+                                    else if (lastRes.Row < y)
+                                        findIndex = results.Count;
+                                }
+
+                                var res = new FoundResult(results.Count, y, x, matches.Count);
+                                for (int i = 0; i < matches.Count; i++)
+                                {
+                                    var m = matches[i];
+                                    res.Pointers[i] = new TextPointer(m.Index, m.Value);
+                                }
+                                results.Add(res);
+                            }
+                        });
                     }
-                });
-            }
+                }
 
-            await Task.Delay(10);
-            _semaphoreSlim.Release();
+                _semaphoreSlim.Release();
+                await Task.Delay(10);
+            }
+            catch(Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
 
             syncContext.Post(args => 
             {
@@ -474,6 +496,7 @@ namespace CsvEditor.ViewModels
     {
         public FindAndReplace CreateFindAndReplace(FindAndReplaceBar ctrl)
         {
+            ctrl.Clear();
             return new FindAndReplace(this, ctrl);
         }
     }

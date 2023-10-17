@@ -98,6 +98,7 @@
     <Compile Include="Controls\FontFamilyPicker.cs" />
     <Compile Include="Controls\GoToBar.cs" />
     <Compile Include="Controls\NumericTextBox.cs" />
+    <Compile Include="Converters\BooleanObjectConverter.cs" />
     <Compile Include="Csv\TextFieldParser.cs" />
     <Compile Include="Commons\FileAssociation.cs" />
     <Compile Include="Interfaces\IGridSource.cs" />

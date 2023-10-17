@@ -329,6 +329,80 @@
         </Setter>
     </Style>
 
+    <Style x:Key="FindReplaceCombobox" TargetType="{x:Type ComboBox}">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+        <Setter Property="MinWidth" Value="80" />
+        <Setter Property="MinHeight" Value="20" />
+        <Setter Property="IsEditable" Value="True" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBox}">
+                    <Grid>
+                        <ToggleButton x:Name="ToggleButton" HorizontalAlignment="Right" ClickMode="Press" Focusable="False" Width="20" Height="20" Margin="0,0,2,0"
+                                      IsChecked="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Border x:Name="PART_Border" Background="Transparent" CornerRadius="2">
+                                        <Path x:Name="PART_Icon" Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z" Height="6" Width="10" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="{TemplateBinding Foreground}" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter TargetName="PART_Icon" Property="Fill" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" TargetName="PART_Border" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
+
+                        <ContentPresenter x:Name="ContentSite" Margin="2" VerticalAlignment="Stretch" HorizontalAlignment="Left" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" />
+
+                        <TextBox x:Name="PART_EditableTextBox" Style="{x:Null}" HorizontalAlignment="Stretch" VerticalAlignment="Center" VerticalContentAlignment="Center" Focusable="True" Background="Transparent" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}">
+                            <TextBox.Template>
+                                <ControlTemplate TargetType="TextBox">
+                                    <Border Focusable="False">
+                                        <ScrollViewer x:Name="PART_ContentHost" Margin="0" SnapsToDevicePixels="True" />
+                                    </Border>
+                                </ControlTemplate>
+                            </TextBox.Template>
+                        </TextBox>
+
+                        <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                            <Grid x:Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                <Border x:Name="DropDownBorder" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+                                    <ScrollViewer SnapsToDevicePixels="True">
+                                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
+                                    </ScrollViewer>
+                                </Border>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasItems" Value="True">
+                            <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95" />
+                        </Trigger>
+                        <Trigger Property="IsGrouping" Value="True">
+                            <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+                        </Trigger>
+                        <Trigger Property="IsEditable" Value="True">
+                            <Setter Property="KeyboardNavigation.IsTabStop" Value="False"/>
+                            <Setter Property="Visibility" TargetName="PART_EditableTextBox" Value="Visible"/>
+                            <Setter Property="Visibility" TargetName="ContentSite" Value="Hidden"/>
+                            <Setter Property="Visibility" TargetName="ToggleButton" Value="Collapsed" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="{x:Type ctrl:FindAndReplaceBar}">
         <Setter Property="MinWidth" Value="350" />
         <Setter Property="Template">
@@ -355,7 +429,7 @@
                                         <ToggleButton Grid.RowSpan="2" Style="{StaticResource ExpandButton}" Margin="4,2,0,2"
                                                       IsChecked="{Binding IsReplace, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ctrl:FindAndReplaceBar}}}"/>
 
-                                        <Border Grid.Column="1" Style="{StaticResource InputBorder}">
+                                        <Border x:Name="PART_Find" Grid.Column="1" Style="{StaticResource InputBorder}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition />
@@ -363,8 +437,10 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <TextBox Grid.Column="0" x:Name="PART_FindInput" BorderThickness="0" VerticalContentAlignment="Center" 
-                                                         Text="{Binding FindText, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ctrl:FindAndReplaceBar}}}"/>
+                                                <ComboBox x:Name="PART_FindInput" Grid.Column="0" Style="{StaticResource FindReplaceCombobox}" IsEditable="True"
+                                                          Text="{Binding FindText, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ctrl:FindAndReplaceBar}}}" 
+                                                          ItemsSource="{Binding FindHistories, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ctrl:FindAndReplaceBar}}}" />
+                                                
                                                 <ToggleButton Grid.Column="1" Style="{StaticResource CaseButton}" 
                                                               IsChecked="{Binding MatchCase, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ctrl:FindAndReplaceBar}}}" />
                                                 <ToggleButton Grid.Column="2" Style="{StaticResource WholeWordButton}" 
@@ -395,9 +471,11 @@
                                                     <ColumnDefinition />
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
+
+                                                <ComboBox Grid.Column="0" x:Name="PART_ReplaceInput" Style="{StaticResource FindReplaceCombobox}" IsEditable="True"
+                                                          Text="{Binding ReplaceText, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ctrl:FindAndReplaceBar}}}"
+                                                          ItemsSource="{Binding ReplaceHistories, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ctrl:FindAndReplaceBar}}}" />
                                                 
-                                                <TextBox Grid.Column="0" x:Name="PART_ReplaceInput" BorderThickness="0" VerticalContentAlignment="Center" 
-                                                         Text="{Binding ReplaceText, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ctrl:FindAndReplaceBar}}}" />
                                                 <ToggleButton Grid.Column="1" Style="{StaticResource PreserveCaseButton}" 
                                                               IsChecked="{Binding PreserveCase, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ctrl:FindAndReplaceBar}}}" />
                                             </Grid>

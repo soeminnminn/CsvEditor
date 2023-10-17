@@ -150,6 +150,7 @@ namespace CsvEditor.ViewModels
                         ColumnType = GridColumnType.LineNumber,
                         ColumnAlignment = System.Windows.Forms.HorizontalAlignment.Right,
                         ColumnWidth = Math.Max($"{count}".Length + 1, 7),
+                        WidthType = GridColumnWidthType.InAverageFontChar,
                         IsWithSelectionBackground = false,
                         IsHeaderClickable = false,
                         IsUserResizable = false
@@ -168,11 +169,11 @@ namespace CsvEditor.ViewModels
 
                     for (int i = 0; i < columnsCount; i++)
                     {
-                        if (colWidths[i] == 0) colWidths[i] = 16;
-
+                        var width = colWidths[i] == 0 ? 16 : colWidths[i];
                         grid.AddColumn(new GridColumnInfo()
                         {
-                            ColumnWidth = Math.Max(7, colWidths[i])
+                            ColumnWidth = Math.Min(Math.Max(8, width), 80),
+                            WidthType = GridColumnWidthType.InAverageFontChar,
                         });
                     }
 
@@ -184,7 +185,9 @@ namespace CsvEditor.ViewModels
                 }
             }
             else
+            {
                 grid.UpdateGrid();
+            }
         }
 
         public void UpdateGridColumns(bool updateGrid = true)

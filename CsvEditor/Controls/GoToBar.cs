@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.ComponentModel;
 
 namespace CsvEditor.Controls
 {
@@ -82,6 +83,7 @@ namespace CsvEditor.Controls
         #endregion
 
         #region Properties
+        [Browsable(false)]
         public ICommand GoCommand
         {
             get => goCommand;
@@ -117,6 +119,7 @@ namespace CsvEditor.Controls
             set { SetValue(YValueProperty, value); }
         }
 
+        [Browsable(false)]
         public bool IsOpen
         {
             get => (bool)GetValue(IsOpenProperty);

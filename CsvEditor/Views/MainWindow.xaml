@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:CsvEditor"
         xmlns:ctrl="clr-namespace:CsvEditor.Controls"
         xmlns:cmd="clr-namespace:CsvEditor.Commands"
+        xmlns:convert="clr-namespace:CsvEditor.Converters"
         xmlns:viewmodels="clr-namespace:CsvEditor.ViewModels"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
@@ -19,6 +20,7 @@
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
+        <convert:BooleanObjectConverter x:Key="revertVisibilityConverter" IsInvert="True" />
     </Window.Resources>
     
     <Window.InputBindings>
@@ -182,7 +184,10 @@
 
         <StatusBar DockPanel.Dock="Bottom" Padding="6,0,6,0" Visibility="{Binding ShowStatusbar, Converter={StaticResource booleanToVisibilityConverter}}">
             <StatusBarItem MinWidth="100">
-                <TextBlock Text="{Binding StateMessage}" />
+                <Grid>
+                    <TextBlock Text="{Binding StateMessage}" Visibility="{Binding IsProcessing, Converter={StaticResource revertVisibilityConverter}}" />
+                    <ProgressBar Height="16" Width="92" IsIndeterminate="True" Visibility="{Binding IsProcessing, Converter={StaticResource booleanToVisibilityConverter}}" />
+                </Grid>
             </StatusBarItem>
             <Separator />
             <StatusBarItem ToolTip="{x:Static local:SR.DelimiterTooltip}">

@@ -38,6 +38,7 @@ namespace CsvEditor.ViewModels
         private bool hasBOM = false;
         private string delimiter = string.Empty;
         private int columnsCount = 0;
+        private bool isProcessing = false;
         private bool isEdited = false;
         private bool hasHeader = false;
 
@@ -116,6 +117,12 @@ namespace CsvEditor.ViewModels
         {
             get => stateMessage;
             internal set { SetProperty(ref stateMessage, value); }
+        }
+
+        public bool IsProcessing
+        {
+            get => isProcessing;
+            internal set { SetProperty(ref isProcessing, value); }
         }
 
         public bool IsEdited
@@ -280,9 +287,12 @@ namespace CsvEditor.ViewModels
             StateMessage = SR.MessageReady;
 
             if (this is IGridSource gs)
+            {
                 gs.UpdateGrid();
+            }
 
             items.ResumeHistory();
+            IsProcessing = false;
 
             CommandManager.InvalidateRequerySuggested();
         }
@@ -367,6 +377,7 @@ namespace CsvEditor.ViewModels
         {
             if (string.IsNullOrEmpty(fileName)) return;
 
+            IsProcessing = true;
             StateMessage = SR.MessageLoading;
 
             watcher.Stop();
@@ -378,6 +389,7 @@ namespace CsvEditor.ViewModels
         {
             if (string.IsNullOrEmpty(currentFile) || isEdited) return;
 
+            IsProcessing = true;
             StateMessage = SR.MessageLoading;
             watcher.Pause();
 
@@ -403,9 +415,13 @@ namespace CsvEditor.ViewModels
             MarkEdited(false);
 
             if (this is IGridSource gs)
+            {
                 gs.ClearGrid();
+            }
 
             StateMessage = SR.MessageReady;
+            IsProcessing = false;
+
             FileClosed?.Invoke(this, EventArgs.Empty);
         }
 
@@ -419,7 +435,9 @@ namespace CsvEditor.ViewModels
                 items.Width = columnCount;
 
                 if (this is IGridSource gs)
+                {
                     gs.UpdateGrid();
+                }
 
                 FileLoaded?.Invoke(this, EventArgs.Empty);
             }
@@ -428,7 +446,8 @@ namespace CsvEditor.ViewModels
         public void SaveFile(string fileName = null)
         {
             if (items.Count == 0) return;
-            
+
+            IsProcessing = true;
             watcher.Stop();
 
             string filePath = string.IsNullOrEmpty(fileName) ? currentFile : fileName;
@@ -487,6 +506,7 @@ namespace CsvEditor.ViewModels
                     MarkEdited(false);
 
                     watcher.Watch(filePath);
+                    IsProcessing = false;
 
                 }, this);
             });

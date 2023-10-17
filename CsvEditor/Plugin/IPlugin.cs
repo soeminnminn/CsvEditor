@@ -4,10 +4,15 @@ using System.Windows.Input;
 
 namespace CsvEditor.Plugin
 {
-    public interface IExportPlugin
+    public interface IPlugin
     {
         string Name { get; }
 
+        void OnPluginLoaded(Window window);
+    }
+
+    public interface IExportPlugin : IPlugin
+    {
         string FileTypeFilter { get; }
 
         string[] FileExtensions { get; }
@@ -15,7 +20,5 @@ namespace CsvEditor.Plugin
         string MenuText { get; }
 
         ICommand Command { get; }
-
-        void OnPluginLoaded(Window window);
     }
 }
