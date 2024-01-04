@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Security.AccessControl;
 using System.Security.Principal;
@@ -230,15 +231,108 @@ namespace CsvEditor.Models
             return isInRoleWithAccess;
         }
 
+        public void LoadSettings()
+        {
+            var settings = Properties.Settings.Default;
+
+            if (!string.IsNullOrEmpty(settings.StartUpOpen) && Enum.TryParse(settings.StartUpOpen, out StartUpModes mode))
+                startUpOpen = mode;
+
+            if (!string.IsNullOrEmpty(settings.DefaultDelimiter))
+                defaultDelimiter = settings.DefaultDelimiter.Replace("\\t", "\t");
+
+            if (settings.DefaultEncoding > 0)
+                defaultEncoding = settings.DefaultEncoding;
+
+            useEncodingWithBom = settings.UseEncodingWithBom;
+            useDefaultEncoding = settings.UseDefaultEncoding;
+
+            if (!string.IsNullOrEmpty(settings.LastOpenedFile))
+                lastOpenedFile = settings.LastOpenedFile;
+
+            showToolbar = settings.ShowToolbar;
+            showStatusbar = settings.ShowStatusbar;
+
+            if (!string.IsNullOrEmpty(settings.EditorFontFamily))
+                editorFontFamily = settings.EditorFontFamily;
+
+            if (settings.EditorFontSize > 0.0)
+                editorFontSize = settings.EditorFontSize;
+
+            if (settings.Files != null)
+            {
+                foreach(var str in settings.Files)
+                {
+                    var file = new FileConfig(str);
+                    fileConfigs.Add(file);
+                }
+            }
+
+            if (settings.RecentFiles != null)
+            {
+                foreach (var str in settings.RecentFiles)
+                {
+                    recentFiles.Add(str);
+                }
+            }
+
+            IsLoaded = true;
+        }
+
+        public void SaveSettings()
+        {
+            Properties.Settings.Default.StartUpOpen = startUpOpen.ToString();
+            Properties.Settings.Default.DefaultDelimiter = defaultDelimiter;
+            Properties.Settings.Default.DefaultEncoding = defaultEncoding;
+            Properties.Settings.Default.UseEncodingWithBom = useEncodingWithBom;
+            Properties.Settings.Default.UseDefaultEncoding = useDefaultEncoding;
+            Properties.Settings.Default.LastOpenedFile = lastOpenedFile;
+
+            Properties.Settings.Default.ShowToolbar = showToolbar;
+            Properties.Settings.Default.ShowStatusbar = showStatusbar;
+            Properties.Settings.Default.EditorFontFamily = editorFontFamily;
+            Properties.Settings.Default.EditorFontSize = (float)editorFontSize;
+
+            var filesCol = new StringCollection();
+            for (int i = 0; i < fileConfigs.Count; i++)
+            {
+                filesCol.Add(fileConfigs[i].ToString());
+            }
+            Properties.Settings.Default.Files = filesCol;
+
+            var recentFilesCol = new StringCollection();
+            for (var i = 0; i < recentFiles.Count; i++)
+            {
+                recentFilesCol.Add(recentFiles[i]);
+            }
+            Properties.Settings.Default.RecentFiles = recentFilesCol;
+
+            Properties.Settings.Default.Save();
+        }
+
         public async Task LoadAsync()
         {
+#if NET
             await _persistence.LoadAsync().ConfigureAwait(false);
             IsLoaded = true;
+#else
+            await Task.Run(() => 
+            {
+                LoadSettings();
+            });
+#endif
         }
 
         public async Task SaveAsync()
         {
+#if NET
             await _persistence.SaveAsync().ConfigureAwait(false);
+#else
+            await Task.Run(() =>
+            {
+                SaveSettings();
+            });
+#endif
         }
 
         public void AddFileConfig(string fileName, bool hasHeader = false)
@@ -442,18 +536,33 @@ namespace CsvEditor.Models
             { }
         }
 
+#if NET
         protected async void Dispose(bool disposing)
         {
             if (!_disposed)
             {
                 if (disposing)
                 {
+
                     await _persistence.SaveAsync().ConfigureAwait(true);
                     _persistence.Dispose();
                 }
                 _disposed = true;
             }
         }
+#else
+        protected void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    SaveSettings();
+                }
+                _disposed = true;
+            }
+        }
+#endif
 
         public void Dispose()
         {

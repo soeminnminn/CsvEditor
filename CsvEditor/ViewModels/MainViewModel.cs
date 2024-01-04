@@ -542,7 +542,7 @@ namespace CsvEditor.ViewModels
         {
             Dispose(true);
         }
-        #endregion
+#endregion
 
         #region Nested Type
         [StructLayout(LayoutKind.Sequential)]
